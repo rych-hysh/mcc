@@ -1,9 +1,9 @@
 CFLAGS=-std=c11 -g -static
 
-msc: msc.cpp
+mcc: mcc.cpp
 
-test: msc
+test: mcc
 	./test.sh
 
 clean: 
-	rm -f msc *.o *~ tmp*
+	rm -f mcc *.o *~ tmp*
