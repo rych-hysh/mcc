@@ -1,7 +1,0 @@
-{
-  "files.associations": {
-    "cstdarg": "cpp",
-    "string": "cpp"
-  },
-  "C_Cpp.default.compilerPath": "/usr/bin/g++"
-}
