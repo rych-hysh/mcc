@@ -2,9 +2,10 @@
 
 #include "tokenizer.hpp"
 #include "parser.hpp"
+#include "util.hpp"
 
-Parser::Parser(){
-  tokenizer = new Tokenizer();
+Parser::Parser(char *_r){
+  raw_input = _r;
 };
 
 Node **Parser::parse(Token *_head_token){
@@ -194,7 +195,7 @@ void Parser::expect(const char *_op)
 {
   if (token_proccessing->type != TokenType::TK_SYMBOL || strlen(_op) != token_proccessing->length || memcmp(token_proccessing->str, _op, token_proccessing->length))
   {
-    fprintf(stderr, u8"'%s'ではありません", _op);
+    error_at(raw_input, token_proccessing->str, u8"'%s'ではありません", _op);
   }
   token_proccessing = token_proccessing->next;
 }
@@ -203,7 +204,7 @@ int Parser::expect_number()
 {
   if (token_proccessing->type != TokenType::TK_NUMBER)
   {
-    fprintf(stderr, u8"数ではありません");
+    error_at(raw_input, token_proccessing->str, "数ではありません");
   }
   int value = token_proccessing->value;
   token_proccessing = token_proccessing->next;

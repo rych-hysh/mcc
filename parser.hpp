@@ -31,7 +31,7 @@ struct Node
 class Parser
 {
 public:
-  Parser();
+  Parser(char *_r);
 
   Node **parse(Token *_head_token);
 
@@ -39,7 +39,7 @@ public:
 
   Node *new_node_num(int _value);
   private:
-  Tokenizer *tokenizer;
+  char *raw_input;
   Token *token_proccessing;
   Node *statement[3];
 
