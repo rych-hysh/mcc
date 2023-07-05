@@ -3,3 +3,6 @@
 tmp*
 a.out
 msc
+parser
+tokenizer
+generator
