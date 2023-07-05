@@ -7,23 +7,7 @@
 #include <cstring>
 #include <string>
 
-//Token(単語)の種別
-enum TokenType : int
-{
-  TK_SYMBOL, //symbol
-  TK_NUMBER, // integer
-  TK_IDENTIFIER, //idintifier
-  TK_EOF,    //end of file
-};
-//Token は、単語単位
-struct Token
-{
-  TokenType type; //token _type
-  Token *next;    //next token
-  int value;      //value when _type = TK_INT
-  char *str;      //token string
-  int length;     //length of token
-};
+#include "types.hpp"
 
 class Tokenizer
 {

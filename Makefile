@@ -6,7 +6,7 @@ CC=g++
 mcc: $(OBJS)
 	$(CC) -o mcc $(OBJS) $(LDFLAGS)
 
-$(OBJS): generator.hpp parser.hpp tokenizer.hpp
+$(OBJS): generator.hpp parser.hpp tokenizer.hpp types.hpp
 
 test: mcc
 	./test.sh

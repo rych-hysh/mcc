@@ -1,32 +1,6 @@
 #pragma once
 #include "tokenizer.hpp"
-
-enum NodeType
-{
-  ND_ADD,    // +
-  ND_SUB,    // -
-  ND_MUL,    // *
-  ND_DIV,    // /
-  ND_EQ,     // ==
-  ND_NE,     // !=
-  ND_LT,     // <
-  ND_LEQ,    // <=
-  ND_GT,     // >
-  ND_GEQ,    // >=
-  ND_ASSIGN, // =
-  ND_LVAL,   // ローカル変数
-  ND_NUMBER, // 整数
-};
-
-//抽象構文木のノードの型
-struct Node
-{
-  NodeType type;
-  Node *leftHandSideNode;
-  Node *rightHandSideNode;
-  int value;  //typeがND_NUMBERの時その値
-  int offset; //typeがND_LVALの場合のベースポインタからのオフセット
-};
+#include "types.hpp"
 
 class Parser
 {

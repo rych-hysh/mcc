@@ -69,10 +69,8 @@ Node *Parser::equality()
   {
     node = new_node(NodeType::ND_NE, node, relational());
   }
-  else
-  {
-    return node;
-  }
+  return node;
+  
 }
 
 Node *Parser::relational()
@@ -94,10 +92,7 @@ Node *Parser::relational()
   {
     node = new_node(NodeType::ND_GT, node, add());
   }
-  else
-  {
-    return node;
-  }
+  return node;
 }
 
 Node *Parser::add()
@@ -195,7 +190,7 @@ void Parser::expect(const char *_op)
 {
   if (token_proccessing->type != TokenType::TK_SYMBOL || strlen(_op) != token_proccessing->length || memcmp(token_proccessing->str, _op, token_proccessing->length))
   {
-    error_at(raw_input, token_proccessing->str, u8"'%s'ではありません", _op);
+    error_at(raw_input, token_proccessing->str, "'%s'ではありません", _op);
   }
   token_proccessing = token_proccessing->next;
 }
