@@ -12,6 +12,7 @@ enum TokenType : int
 {
   TK_SYMBOL, //symbol
   TK_NUMBER, // integer
+  TK_IDENTIFIER, //idintifier
   TK_EOF,    //end of file
 };
 //Token は、単語単位

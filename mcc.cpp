@@ -31,15 +31,32 @@ int main(int argc, char **argv)
 
   Parser *parser = new Parser();
   //入力をtoken(単語)に分割し、最初のtokenをtoken_proccessingに代入
-  Node *top_node = parser->parse(head_token);
+  Node **statement = parser->parse(head_token);
 
   printf(".intel_syntax noprefix\n");
   printf(".globl main\n");
   printf("main:\n");
-  Generator *generator = new Generator();
-  generator->gen(top_node);
 
-  printf("  pop rax\n");
+  //prologue
+  //変数26個分の領域を確保する(26 * 8 = 208)
+  printf("  push rbp\n");
+  printf("  mov rbp, rsp\n");
+  printf("  sub rsp, 208\n");
+
+
+  Generator *generator = new Generator();
+  int i = 0;
+  while(statement[i]){
+    //各文のトップノードを渡す
+    generator->gen(statement[i++]);
+    printf("  pop rax\n");
+  }
+
+  //epilogue
+  //最後の式の結果がraxに残っているはずなのでそれが返り値になる
+
+  printf("  mov rsp, rbp\n");
+  printf("  pop rbp\n");
   printf("  ret\n");
 
   return 0;

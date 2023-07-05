@@ -50,7 +50,7 @@ Token *Tokenizer::tokenize(char *_p)
 {
   Token head;
   head.next = NULL;
-  Token *_current = &head;
+  Token *current = &head;
 
   while (*_p)
   {
@@ -62,31 +62,36 @@ Token *Tokenizer::tokenize(char *_p)
     }
 
     if(startswith(_p, "==") || startswith(_p, "!=") || startswith(_p, "<=") || startswith(_p, ">=") ){
-      _current = new_token(TokenType::TK_SYMBOL, _current, _p, 2);
+      current = new_token(TokenType::TK_SYMBOL, current, _p, 2);
       _p+=2;
       continue;
     }
 
     //入力文字列が+か-ならTK_SYMBOL typeのトークンを追加して次の文字へ
-    if (strchr("+-*/()=<>", *_p))
+    if (strchr("+-*/()=<>;", *_p))
     {
       //引数に_p++を渡すことでpを渡しつつpを一つ進めてる。テクい。++pとの違いが出てる。
-      _current = new_token(TokenType::TK_SYMBOL, _current, _p++, 1);
+      current = new_token(TokenType::TK_SYMBOL, current, _p++, 1);
       continue;
     }
 
     if (isdigit(*_p))
     {
-      _current = new_token(TokenType::TK_NUMBER, _current, _p, 0);
+      current = new_token(TokenType::TK_NUMBER, current, _p, 0);
       //strtolは数値を読み込んだ後、第二引数のポインタをアップデートし読み込んだ最後の文字の次の文字を指すように値を更新する
       char *q = _p;
-      _current->value = strtol(_p, &_p, 10);
-      _current->length = _p - q;
+      current->value = strtol(_p, &_p, 10);
+      current->length = _p - q;
+      continue;
+    }
+
+    if(isalpha(*_p)){
+      current = new_token(TokenType::TK_IDENTIFIER, current, _p++, 1);
       continue;
     }
 
     error("tokenizeできません");
   }
-  new_token(TokenType::TK_EOF, _current, _p, 0);
+  current = new_token(TokenType::TK_EOF, current, _p, 0);
   return head.next;
 }

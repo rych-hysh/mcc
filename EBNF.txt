@@ -1,4 +1,7 @@
-expr = equality
+program = stmt*
+stmt = expr ";"
+expre = assign
+assign = equality ( "=" assign)?
 equality = relational ("==" relational | "!=" relational)*
 relational = add ("<" add | "<=" add | ">" add | ">=" add)*
 add = mul ( "+" mul | "-" mul)*

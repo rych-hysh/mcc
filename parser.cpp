@@ -7,9 +7,9 @@ Parser::Parser(){
   tokenizer = new Tokenizer();
 };
 
-Node *Parser::parse(Token *_head_token){
+Node **Parser::parse(Token *_head_token){
   token_proccessing = _head_token;
-  return expr();
+  return program();
 }
 
 Node *Parser::new_node(NodeType _type, Node *_lhs, Node *_rhs)
@@ -29,9 +29,32 @@ Node *Parser::new_node_num(int _value)
   return new_node;
 }
 
+Node **Parser::program(){
+  int i = 0;
+  while( !at_eof()){
+    statement[i++] = stmt();
+  }
+  statement[i] = NULL;
+  return statement;
+}
+
+Node *Parser::stmt(){
+  Node *node = expr();
+  expect(";");
+  return node;
+}
+
 Node *Parser::expr()
 {
-  return equality();
+  return assign();
+}
+
+Node *Parser::assign(){
+  Node *node = equality();
+  if(consume("=")){
+    node = new_node(ND_ASSIGN, node, assign());
+  }
+  return node;
 }
 
 Node *Parser::equality()
@@ -137,6 +160,13 @@ Node *Parser::primary()
     expect(")");
     return node;
   }
+  Token *token = consume_identifier();
+  if(token){
+    Node *node = (Node*) calloc(1, sizeof(Node));
+    node->type = ND_LVAL;
+    node->offset = (token->str[0] - 'a' + 1) * 8;
+    return node;
+  }
   //そうでなければ数値のはず
   return new_node_num(expect_number());
 }
@@ -149,6 +179,14 @@ bool Parser::consume(const char *_op)
     return false;
   token_proccessing = token_proccessing->next;
   return true;
+}
+
+Token *Parser::consume_identifier(){
+  if(token_proccessing->type != TokenType::TK_IDENTIFIER || !isalpha(token_proccessing->str[0])){
+    return NULL;
+  }
+  token_proccessing = token_proccessing->next;
+  return token_proccessing;
 }
 
 // 次のtokenが期待している記号の時にはトークンを１つ読み進めて真を返す。それ以外の場合はエラーを報告する。

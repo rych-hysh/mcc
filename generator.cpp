@@ -3,12 +3,36 @@
 #include "parser.hpp"
 #include "generator.hpp"
 
+void Generator::gen_left_value(Node *node){
+  if(node->type != NodeType::ND_LVAL){
+    fprintf(stderr, "left hand side of assignment statement is not local variable");
+    exit(1);
+  }
+  printf("  mov rax, rbp\n");
+  printf("  sub rax, %d\n", node->offset);
+  printf("  push rax\n");
+}
+
 void Generator::gen(Node *_node)
 {
-  if (_node->type == NodeType::ND_NUMBER)
-  {
-    printf("  push %d\n", _node->value);
-    return;
+  switch(_node->type){
+    case NodeType::ND_NUMBER:
+      printf("  push %d\n", _node->value);
+      return;
+    case NodeType::ND_LVAL:
+      gen_left_value(_node);
+      printf("  pop rax\n");
+      printf("  mov rax, [rax]\n");
+      printf("  push rax\n");
+      return;
+    case NodeType::ND_ASSIGN:
+      gen_left_value(_node->leftHandSideNode);
+      gen(_node->rightHandSideNode);
+      printf("  pop rdi\n");
+      printf("  pop rax\n");
+      printf("  mov [rax], rdi\n");
+      printf("  push rdi\n");
+      return;
   }
 
   gen(_node->leftHandSideNode);
