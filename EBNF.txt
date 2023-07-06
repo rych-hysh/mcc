@@ -1,6 +1,6 @@
 program = stmt*
-stmt = expr ";"
-expre = assign
+stmt = expr ";" | "return" expr ";"
+expr = assign
 assign = equality ( "=" assign)?
 equality = relational ("==" relational | "!=" relational)*
 relational = add ("<" add | "<=" add | ">" add | ">=" add)*

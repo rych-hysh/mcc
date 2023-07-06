@@ -21,6 +21,8 @@ class Tokenizer
 
   bool startswith(char *_p, const char *_q);
 
+  bool is_token_char(char c);
+
   ///入力文字列pをトークナイズして返す
   Token *tokenize(char *_p);
 };

@@ -6,6 +6,7 @@ enum TokenType : int
   TK_SYMBOL, //symbol
   TK_NUMBER, // integer
   TK_IDENTIFIER, //idintifier
+  TK_RETURN, // token of "return"
   TK_EOF,    //end of file
 };
 //Token は、単語単位
@@ -32,6 +33,7 @@ enum NodeType
   ND_GEQ,    // >=
   ND_ASSIGN, // =
   ND_LVAL,   // ローカル変数
+  ND_RETURN, // return
   ND_NUMBER, // 整数
 };
 

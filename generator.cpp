@@ -3,6 +3,12 @@
 #include "parser.hpp"
 #include "generator.hpp"
 
+Generator::Generator(){
+  printf(".intel_syntax noprefix\n");
+  printf(".globl main\n");
+  printf("main:\n");
+}
+
 void Generator::gen_left_value(Node *node){
   if(node->type != NodeType::ND_LVAL){
     fprintf(stderr, "left hand side of assignment statement is not local variable");
@@ -13,6 +19,21 @@ void Generator::gen_left_value(Node *node){
   printf("  push rax\n");
 }
 
+void Generator::gen_prologue(){
+  //prologue
+  //変数26個分の領域を確保する(26 * 8 = 208)
+  printf("  push rbp\n");
+  printf("  mov rbp, rsp\n");
+  printf("  sub rsp, 208\n");
+}
+
+void Generator::gen_epilogue(){
+  //epilogue
+  //最後の式の結果がraxに残っているはずなのでそれが返り値になる
+  printf("  mov rsp, rbp\n");
+  printf("  pop rbp\n");
+  printf("  ret\n");
+}
 void Generator::gen(Node *_node)
 {
   switch(_node->type){
@@ -32,6 +53,13 @@ void Generator::gen(Node *_node)
       printf("  pop rax\n");
       printf("  mov [rax], rdi\n");
       printf("  push rdi\n");
+      return;
+    case NodeType::ND_RETURN:
+      gen(_node->leftHandSideNode);
+      printf("  pop rax\n");
+      printf("  mov rsp, rbp\n");
+      printf("  pop rbp\n");
+      printf("  ret\n");
       return;
   }
 

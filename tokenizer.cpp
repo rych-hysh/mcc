@@ -46,6 +46,13 @@ bool Tokenizer::startswith(char *_p, const char *_q){
   return memcmp(_p, _q, strlen(_q)) == 0;
 }
 
+bool Tokenizer::is_token_char(char _c){
+  return ('a' <= _c && _c <= 'z') ||
+         ('A' <= _c && _c <= 'Z') ||
+         ('0' <= _c && _c <= '9') ||
+         (_c == '_');
+}
+
 ///入力文字列pをトークナイズして返す
 Token *Tokenizer::tokenize(char *_p)
 {
@@ -76,6 +83,12 @@ Token *Tokenizer::tokenize(char *_p)
       continue;
     }
 
+    if (strncmp(_p, "return", 6) == 0 && !is_token_char(_p[6])) {
+      current = new_token(TokenType::TK_RETURN, current, _p, 6);
+      _p += 6;
+      continue;
+    }
+
     if (isdigit(*_p))
     {
       current = new_token(TokenType::TK_NUMBER, current, _p, 0);
@@ -86,13 +99,13 @@ Token *Tokenizer::tokenize(char *_p)
       continue;
     }
 
-    if(isalpha(*_p)){
+    if(is_token_char(*_p)){
       char *tmp = _p;
-      char *var_name = _p;
-      while(isalpha(*++_p)){
-        ++var_name = _p;
+      int len = 1;
+      while(is_token_char(*++_p)){
+        len++;
       }
-      current = new_token(TokenType::TK_IDENTIFIER, current, tmp, 3);
+      current = new_token(TokenType::TK_IDENTIFIER, current, tmp, len);
       continue;
     }
 

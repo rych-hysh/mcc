@@ -30,4 +30,6 @@ assert 1 ' 2 <= 2;'
 assert 0 ' 2 < 2;'
 assert 2 'foo=2;'
 assert 5 'foo=2;foo+3;'
+assert 1 'index=0; index=index+1; return index;'
+assert 16 'foo = 2; var = 3; s = foo * var;return 2*(s+2);'
 echo OK

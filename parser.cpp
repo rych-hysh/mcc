@@ -43,7 +43,12 @@ Node **Parser::program(){
 }
 
 Node *Parser::stmt(){
-  Node *node = expr();
+  Node *node = (Node*)calloc(1, sizeof(Node));
+  if(consume_reserved("return")){
+    node = new_node(NodeType::ND_RETURN, expr(), NULL);
+  }else{
+    node = expr();
+  }
   expect(";");
   return node;
 }
@@ -198,6 +203,22 @@ bool Parser::consume(const char *_op)
 {
   if (token_proccessing->type != TokenType::TK_SYMBOL || strlen(_op) != token_proccessing->length || memcmp(token_proccessing->str, _op, token_proccessing->length))
     return false;
+  token_proccessing = token_proccessing->next;
+  return true;
+}
+
+// TODO: TK_RESERVEDにまとめられるか検討
+bool Parser::consume_reserved(const char *_reserved){
+  switch (token_proccessing->type)
+  {
+  case TokenType::TK_RETURN:
+    if(memcmp(token_proccessing->str, _reserved, token_proccessing->length)){
+      return false;
+    }
+    break;
+  default:
+    return false;
+  }
   token_proccessing = token_proccessing->next;
   return true;
 }
