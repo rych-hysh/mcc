@@ -6,3 +6,4 @@ msc
 parser
 tokenizer
 generator
+*.log

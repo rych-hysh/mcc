@@ -5,6 +5,8 @@
 #include <cstring>
 #include <cstdarg>
 #include <iostream>
+#include <fstream>
+#include <string>
 
 #include "parser.hpp"
 #include "tokenizer.hpp"
@@ -15,6 +17,8 @@ using namespace std;
 char *reading_program;
 // head token
 Token *head_token;
+
+bool debug_flag = true;
 
 int main(int argc, char **argv)
 {
@@ -29,7 +33,20 @@ int main(int argc, char **argv)
   Tokenizer *tokenizer = new Tokenizer();
   head_token = tokenizer->tokenize(reading_program);
 
-  Parser *parser = new Parser(reading_program);
+  if(debug_flag){
+    Token *head = head_token;
+    ofstream writing_file;
+    string filename="tokenize_result.log";
+    writing_file.open(filename, ios::out);
+    while(head_token){
+      writing_file << "'" << head_token->str <<  "', " << endl;
+      head_token = head_token->next;
+    }
+    writing_file.close();
+    head_token = head;
+  }
+
+  Parser *parser = new Parser();
   //入力をtoken(単語)に分割し、最初のtokenをtoken_proccessingに代入
   Node **statement = parser->parse(head_token);
 

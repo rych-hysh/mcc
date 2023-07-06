@@ -45,3 +45,9 @@ struct Node
   int offset; //typeがND_LVALの場合のベースポインタからのオフセット
 };
 
+struct LocalVariable {
+  LocalVariable *next;  // 次の変数かNULL
+  char *name;           // 変数の名前
+  int length;           // 変数名の長さ
+  int offset;           // RBPからのオフセット
+};

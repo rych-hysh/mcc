@@ -4,6 +4,7 @@
 #include <cctype>
 #include <cstring>
 #include <string>
+#include <bits/stdc++.h>
 
 #include "tokenizer.hpp"
 
@@ -86,7 +87,12 @@ Token *Tokenizer::tokenize(char *_p)
     }
 
     if(isalpha(*_p)){
-      current = new_token(TokenType::TK_IDENTIFIER, current, _p++, 1);
+      char *tmp = _p;
+      char *var_name = _p;
+      while(isalpha(*++_p)){
+        ++var_name = _p;
+      }
+      current = new_token(TokenType::TK_IDENTIFIER, current, tmp, 3);
       continue;
     }
 

@@ -4,8 +4,11 @@
 #include "parser.hpp"
 #include "util.hpp"
 
-Parser::Parser(char *_r){
-  raw_input = _r;
+Parser::Parser(){
+  locals = (LocalVariable *)calloc(1, sizeof(LocalVariable));
+  locals->offset = 0;
+  //strcpy(raw_input, _r);
+  //raw_input = _r;
 };
 
 Node **Parser::parse(Token *_head_token){
@@ -156,16 +159,38 @@ Node *Parser::primary()
     expect(")");
     return node;
   }
-  Token *token = consume_identifier();
-  if(token){
+  Token *identifier = consume_identifier();
+  if(identifier){
     Node *node = (Node*) calloc(1, sizeof(Node));
     node->type = ND_LVAL;
-    node->offset = (token->str[0] - 'a' + 1) * 8;
+
+    LocalVariable *lvar = find_local_var(identifier);
+    if(lvar){
+      //すでに使われた変数ならそのオフセットを取得することでアドレスを取得
+      node->offset = lvar->offset;
+    } else{
+      lvar = (LocalVariable*) calloc(1, sizeof(LocalVariable));
+      lvar->next = locals;
+      lvar->name = identifier->str;
+      lvar->length = identifier->length;
+      lvar->offset = locals->offset + 8;
+      node->offset = lvar->offset;
+      locals = lvar;
+    }
     return node;
   }
   //そうでなければ数値のはず
   return new_node_num(expect_number());
 }
+
+  LocalVariable *Parser::find_local_var(Token *_token){
+    for (LocalVariable *var = locals; var; var = var->next){
+      if(var->length == _token->length && !memcmp(_token->str, var->name, var->length)){
+        return var;
+      }
+    }
+    return NULL;
+  }
 
 // maybe _op means operando
 // 次のtokenが期待している記号の時にはトークンを１つ読み進めて真を返す。それ以外の場合は偽を返す。
@@ -178,11 +203,12 @@ bool Parser::consume(const char *_op)
 }
 
 Token *Parser::consume_identifier(){
-  if(token_proccessing->type != TokenType::TK_IDENTIFIER || !isalpha(token_proccessing->str[0])){
+  if(token_proccessing->type != TokenType::TK_IDENTIFIER){
     return NULL;
   }
+  Token *proccessing = token_proccessing;
   token_proccessing = token_proccessing->next;
-  return token_proccessing;
+  return proccessing;
 }
 
 // 次のtokenが期待している記号の時にはトークンを１つ読み進めて真を返す。それ以外の場合はエラーを報告する。

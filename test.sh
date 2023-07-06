@@ -28,4 +28,6 @@ assert 0 '2 == 3;'
 assert 1 '2 != 3;'
 assert 1 ' 2 <= 2;'
 assert 0 ' 2 < 2;'
+assert 2 'foo=2;'
+assert 5 'foo=2;foo+3;'
 echo OK
