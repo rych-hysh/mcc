@@ -198,37 +198,39 @@ Node *Parser::primary()
 
 // maybe _op means operando
 // 次のtokenが期待している記号の時にはトークンを１つ読み進めて真を返す。それ以外の場合は偽を返す。
-bool Parser::consume(const char *_op)
+Token *Parser::consume(const char *_op)
 {
   if (token_proccessing->type != TokenType::TK_SYMBOL || strlen(_op) != token_proccessing->length || memcmp(token_proccessing->str, _op, token_proccessing->length))
-    return false;
+    return NULL;
+  Token *consumed = token_proccessing;
   token_proccessing = token_proccessing->next;
-  return true;
+  return consumed;
 }
 
 // TODO: TK_RESERVEDにまとめられるか検討
-bool Parser::consume_reserved(const char *_reserved){
+Token *Parser::consume_reserved(const char *_reserved){
   switch (token_proccessing->type)
   {
   case TokenType::TK_RETURN:
     if(memcmp(token_proccessing->str, _reserved, token_proccessing->length)){
-      return false;
+      return NULL;
     }
     break;
   default:
-    return false;
+    return NULL;
   }
+  Token *consumed = token_proccessing;
   token_proccessing = token_proccessing->next;
-  return true;
+  return consumed;
 }
 
 Token *Parser::consume_identifier(){
   if(token_proccessing->type != TokenType::TK_IDENTIFIER){
     return NULL;
   }
-  Token *proccessing = token_proccessing;
+  Token *consumed = token_proccessing;
   token_proccessing = token_proccessing->next;
-  return proccessing;
+  return consumed;
 }
 
 // 次のtokenが期待している記号の時にはトークンを１つ読み進めて真を返す。それ以外の場合はエラーを報告する。

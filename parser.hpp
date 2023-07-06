@@ -21,8 +21,8 @@ private:
 
   LocalVariable *find_local_var(Token *_token);
   // 次のtokenが期待している記号の時にはトークンを１つ読み進めて真を返す。それ以外の場合は偽を返す。
-  bool consume(const char *_op);
-  bool consume_reserved(const char *_reserved);
+  Token *consume(const char *_op);
+  Token *consume_reserved(const char *_reserved);
   Token *consume_identifier();
 
   // 次のtokenが期待している記号の時にはトークンを１つ読み進めて真を返す。それ以外の場合はエラーを報告する。
