@@ -4,11 +4,10 @@
 #include "parser.hpp"
 #include "util.hpp"
 
-Parser::Parser(){
+Parser::Parser(char *_r){
   locals = (LocalVariable *)calloc(1, sizeof(LocalVariable));
   locals->offset = 0;
-  //strcpy(raw_input, _r);
-  //raw_input = _r;
+  raw_input = _r;
 };
 
 Node **Parser::parse(Token *_head_token){

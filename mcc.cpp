@@ -46,7 +46,7 @@ int main(int argc, char **argv)
     head_token = head;
   }
 
-  Parser *parser = new Parser();
+  Parser *parser = new Parser(reading_program);
   //入力をtoken(単語)に分割し、最初のtokenをtoken_proccessingに代入
   Node **statement = parser->parse(head_token);
 

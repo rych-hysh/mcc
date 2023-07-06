@@ -5,7 +5,7 @@
 class Parser
 {
 public:
-  Parser();
+  Parser(char *_raw_input);
 
   Node **parse(Token *_head_token);
 
