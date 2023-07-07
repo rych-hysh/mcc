@@ -1,5 +1,9 @@
 program = stmt*
-stmt = expr ";" | "return" expr ";" | "if" "(" expr ")" stmt ";" ("else" stmt)?
+stmt = expr ";" | "if" "(" expr ")" stmt ("else" stmt)? | "while" "(" expr ")" stmt | "for" "(" expr? ";" expr? ";" expr? ")" stmt 
+<<<<<<< Updated upstream
+=======
+stmt = expr ";" | "return" expr ";"
+>>>>>>> Stashed changes
 expr = assign
 assign = equality ( "=" assign)?
 equality = relational ("==" relational | "!=" relational)*

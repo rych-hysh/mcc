@@ -2,7 +2,7 @@
 *.o
 tmp*
 a.out
-msc
+mcc
 parser
 tokenizer
 generator

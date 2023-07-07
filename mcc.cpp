@@ -39,13 +39,19 @@ int main(int argc, char **argv)
     string filename="tokenize_result.log";
     writing_file.open(filename, ios::out);
     while(head_token){
-      writing_file << "'" << head_token->str <<  "', " << endl;
+      writing_file << "'";
+      for(int i = 0;i<head_token->length;i++){
+        writing_file << head_token->str[i] << flush;
+      }
+      writing_file << "', " << flush;
       head_token = head_token->next;
     }
+    writing_file << "EOF" << endl;
     writing_file.close();
     head_token = head;
   }
 
+  // エラー箇所表示のためプログラム本文をparserにも渡す
   Parser *parser = new Parser(reading_program);
   //入力をtoken(単語)に分割し、最初のtokenをtoken_proccessingに代入
   Node **statement = parser->parse(head_token);
