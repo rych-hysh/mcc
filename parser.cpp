@@ -46,6 +46,7 @@ Node **Parser::program()
 
 Node *Parser::stmt()
 {
+  //if(consume(";", TokenType::TK_SYMBOL))return new_node_num(1);
   Node *node = (Node *)calloc(1, sizeof(Node));
   if (consume("return", TokenType::TK_RESERVED))
   {
@@ -54,7 +55,8 @@ Node *Parser::stmt()
     expect("(");
     node = new_node(NodeType::ND_IF, expr(), NULL);
     expect(")");
-    //node->thenNode = stmt();
+    node->thenNode = stmt();
+    return node;
   } else {
     node = expr();
   }
