@@ -15,6 +15,7 @@ assert(){
   fi
 }
 
+assert 1 "3==3;"
 assert 0 "0;"
 assert 42 "42;"
 assert 21 "5+    20-4;"
@@ -32,4 +33,5 @@ assert 2 'foo=2;'
 assert 5 'foo=2;foo+3;'
 assert 1 'index=0; index=index+1; return index;'
 assert 16 'foo = 2; var = 3; s = foo * var;return 2*(s+2);'
+assert 1 "a=2;if(a==2);"
 echo OK

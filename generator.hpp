@@ -3,6 +3,8 @@
 #include "parser.hpp"
 
 class Generator{
+  private:
+  int global_label_index = 0;
   public:
   Generator();
   void gen_left_value(Node *node);

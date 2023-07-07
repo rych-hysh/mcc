@@ -30,6 +30,7 @@ void Generator::gen_prologue(){
 void Generator::gen_epilogue(){
   //epilogue
   //最後の式の結果がraxに残っているはずなのでそれが返り値になる
+  printf("  pop rax\n");
   printf("  mov rsp, rbp\n");
   printf("  pop rbp\n");
   printf("  ret\n");
@@ -60,6 +61,17 @@ void Generator::gen(Node *_node)
       printf("  mov rsp, rbp\n");
       printf("  pop rbp\n");
       printf("  ret\n");
+      return;
+    case NodeType::ND_IF:
+      gen(_node->leftHandSideNode);
+      //IF文の結果が真ならスタックトップに1が、偽なら０が入っている
+      printf("  pop rax\n");
+      // スタックトップが０（IFが偽）なら次の処理を飛ばす
+      //printf("  cmp rax, 0\n");
+      //printf("  je .Lend_mcc%d\n", global_label_index++);
+      printf("  push rax\n");
+
+
       return;
   }
 

@@ -17,9 +17,11 @@ private:
   char *raw_input;
   Token *token_proccessing;
   Node *statement[100];
+  int statement_index = 0;
   LocalVariable *locals;
 
   LocalVariable *find_local_var(Token *_token);
+  Token *consume(const char *_str, TokenType _TK_TYPE);
   // 次のtokenが期待している記号の時にはトークンを１つ読み進めて真を返す。それ以外の場合は偽を返す。
   Token *consume(const char *_op);
   Token *consume_reserved(const char *_reserved);

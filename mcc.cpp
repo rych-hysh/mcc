@@ -58,7 +58,7 @@ int main(int argc, char **argv)
   while(statement[i]){
     //各文のトップノードを渡す
     generator->gen(statement[i++]);
-    printf("  pop rax\n");
+    //printf("  pop rax\n");
   }
 
   generator->gen_epilogue();

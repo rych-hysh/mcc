@@ -11,6 +11,7 @@
 
 class Tokenizer
 {
+  const std::string RESERVED_WORDS[3] = {"return", "if", "else"};
   public:
   void error(std::string _message, ...);
   // TODO: STEP4　改良

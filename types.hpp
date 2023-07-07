@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 //Token(単語)の種別
 enum TokenType : int
 {
@@ -7,6 +9,9 @@ enum TokenType : int
   TK_NUMBER, // integer
   TK_IDENTIFIER, //idintifier
   TK_RETURN, // token of "return"
+  TK_IF,      // token for "if"
+  // TODO: replave TK_RETURN and TK_IF with TK_RESERVED
+  TK_RESERVED,  // token of reserve word, such as "return", "if"
   TK_EOF,    //end of file
 };
 //Token は、単語単位
@@ -34,6 +39,7 @@ enum NodeType
   ND_ASSIGN, // =
   ND_LVAL,   // ローカル変数
   ND_RETURN, // return
+  ND_IF,
   ND_NUMBER, // 整数
 };
 
@@ -43,6 +49,9 @@ struct Node
   NodeType type;
   Node *leftHandSideNode;
   Node *rightHandSideNode;
+
+  Node *thenNode;
+  Node *elseNode;
   int value;  //typeがND_NUMBERの時その値
   int offset; //typeがND_LVALの場合のベースポインタからのオフセット
 };

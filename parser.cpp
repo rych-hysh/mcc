@@ -4,13 +4,15 @@
 #include "parser.hpp"
 #include "util.hpp"
 
-Parser::Parser(char *_r){
+Parser::Parser(char *_r)
+{
   locals = (LocalVariable *)calloc(1, sizeof(LocalVariable));
   locals->offset = 0;
   raw_input = _r;
 };
 
-Node **Parser::parse(Token *_head_token){
+Node **Parser::parse(Token *_head_token)
+{
   token_proccessing = _head_token;
   return program();
 }
@@ -32,20 +34,28 @@ Node *Parser::new_node_num(int _value)
   return new_node;
 }
 
-Node **Parser::program(){
-  int i = 0;
-  while( !at_eof()){
-    statement[i++] = stmt();
+Node **Parser::program()
+{
+  while (!at_eof())
+  {
+    statement[statement_index++] = stmt();
   }
-  statement[i] = NULL;
+  statement[statement_index] = NULL;
   return statement;
 }
 
-Node *Parser::stmt(){
-  Node *node = (Node*)calloc(1, sizeof(Node));
-  if(consume_reserved("return")){
+Node *Parser::stmt()
+{
+  Node *node = (Node *)calloc(1, sizeof(Node));
+  if (consume("return", TokenType::TK_RESERVED))
+  {
     node = new_node(NodeType::ND_RETURN, expr(), NULL);
-  }else{
+  } else if(consume("if", TokenType::TK_RESERVED)){
+    expect("(");
+    node = new_node(NodeType::ND_IF, expr(), NULL);
+    expect(")");
+    //node->thenNode = stmt();
+  } else {
     node = expr();
   }
   expect(";");
@@ -57,9 +67,11 @@ Node *Parser::expr()
   return assign();
 }
 
-Node *Parser::assign(){
+Node *Parser::assign()
+{
   Node *node = equality();
-  if(consume("=")){
+  if (consume("="))
+  {
     node = new_node(ND_ASSIGN, node, assign());
   }
   return node;
@@ -77,7 +89,6 @@ Node *Parser::equality()
     node = new_node(NodeType::ND_NE, node, relational());
   }
   return node;
-  
 }
 
 Node *Parser::relational()
@@ -164,16 +175,20 @@ Node *Parser::primary()
     return node;
   }
   Token *identifier = consume_identifier();
-  if(identifier){
-    Node *node = (Node*) calloc(1, sizeof(Node));
+  if (identifier)
+  {
+    Node *node = (Node *)calloc(1, sizeof(Node));
     node->type = ND_LVAL;
 
     LocalVariable *lvar = find_local_var(identifier);
-    if(lvar){
-      //すでに使われた変数ならそのオフセットを取得することでアドレスを取得
+    if (lvar)
+    {
+      // すでに使われた変数ならそのオフセットを取得することでアドレスを取得
       node->offset = lvar->offset;
-    } else{
-      lvar = (LocalVariable*) calloc(1, sizeof(LocalVariable));
+    }
+    else
+    {
+      lvar = (LocalVariable *)calloc(1, sizeof(LocalVariable));
       lvar->next = locals;
       lvar->name = identifier->str;
       lvar->length = identifier->length;
@@ -183,18 +198,30 @@ Node *Parser::primary()
     }
     return node;
   }
-  //そうでなければ数値のはず
+  // そうでなければ数値のはず
   return new_node_num(expect_number());
 }
 
-  LocalVariable *Parser::find_local_var(Token *_token){
-    for (LocalVariable *var = locals; var; var = var->next){
-      if(var->length == _token->length && !memcmp(_token->str, var->name, var->length)){
-        return var;
-      }
+LocalVariable *Parser::find_local_var(Token *_token)
+{
+  for (LocalVariable *var = locals; var; var = var->next)
+  {
+    if (var->length == _token->length && !memcmp(_token->str, var->name, var->length))
+    {
+      return var;
     }
-    return NULL;
   }
+  return NULL;
+}
+
+// TODO: たぶんこれでconsumeとconsume_reservedをまとめられるのでconsume()とconsume_resserved()削除
+Token *Parser::consume(const char *_str, TokenType _TK_TYPE){
+  if (token_proccessing->type != _TK_TYPE || strlen(_str) != token_proccessing->length || memcmp(token_proccessing->str, _str, token_proccessing->length))
+    return NULL;
+  Token *consumed = token_proccessing;
+  token_proccessing = token_proccessing->next;
+  return consumed;
+}
 
 // maybe _op means operando
 // 次のtokenが期待している記号の時にはトークンを１つ読み進めて真を返す。それ以外の場合は偽を返す。
@@ -207,25 +234,19 @@ Token *Parser::consume(const char *_op)
   return consumed;
 }
 
-// TODO: TK_RESERVEDにまとめられるか検討
-Token *Parser::consume_reserved(const char *_reserved){
-  switch (token_proccessing->type)
-  {
-  case TokenType::TK_RETURN:
-    if(memcmp(token_proccessing->str, _reserved, token_proccessing->length)){
-      return NULL;
-    }
-    break;
-  default:
+Token *Parser::consume_reserved(const char *_reserved)
+{
+  if (token_proccessing->type != TK_RESERVED || memcmp(token_proccessing->str, _reserved, token_proccessing->length))
     return NULL;
-  }
   Token *consumed = token_proccessing;
   token_proccessing = token_proccessing->next;
   return consumed;
 }
 
-Token *Parser::consume_identifier(){
-  if(token_proccessing->type != TokenType::TK_IDENTIFIER){
+Token *Parser::consume_identifier()
+{
+  if (token_proccessing->type != TokenType::TK_IDENTIFIER)
+  {
     return NULL;
   }
   Token *consumed = token_proccessing;

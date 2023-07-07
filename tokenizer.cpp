@@ -84,8 +84,13 @@ Token *Tokenizer::tokenize(char *_p)
     }
 
     if (strncmp(_p, "return", 6) == 0 && !is_token_char(_p[6])) {
-      current = new_token(TokenType::TK_RETURN, current, _p, 6);
+      current = new_token(TokenType::TK_RESERVED, current, _p, 6);
       _p += 6;
+      continue;
+    }
+    if (strncmp(_p, "if", 2) == 0 && !is_token_char(_p[2])) {
+      current = new_token(TokenType::TK_RESERVED, current, _p, 2);
+      _p += 2;
       continue;
     }
 
@@ -100,12 +105,21 @@ Token *Tokenizer::tokenize(char *_p)
     }
 
     if(is_token_char(*_p)){
-      char *tmp = _p;
+      char *token_char = _p;
       int len = 1;
       while(is_token_char(*++_p)){
         len++;
       }
-      current = new_token(TokenType::TK_IDENTIFIER, current, tmp, len);
+      bool reserved = false;
+      for(string w : RESERVED_WORDS){
+        if(!memcmp(w.c_str(), token_char, len)){
+          current = new_token(TokenType::TK_RESERVED, current, token_char, len);
+          reserved = true;
+          break;
+        }
+      }
+      if(reserved)continue;
+      current = new_token(TokenType::TK_IDENTIFIER, current, token_char, len);
       continue;
     }
 
