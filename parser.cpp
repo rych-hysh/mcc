@@ -56,6 +56,9 @@ Node *Parser::stmt()
     node = new_node(NodeType::ND_IF, expr(), NULL);
     expect(")");
     node->thenNode = stmt();
+    if(consume("else", TokenType::TK_RESERVED)){
+      node->elseNode = stmt();
+    }
     return node;
   } else {
     node = expr();

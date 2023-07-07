@@ -6,7 +6,7 @@ flowchart TD
 3([ND_NUMBER])
 0-- right ---3
 100([ND_IF])
-101([ND_EQ])
+101([ND_NE])
 102([ND_LVAL])
 101-- left ---102
 205([ND_NUMBER])
@@ -18,6 +18,12 @@ flowchart TD
 409([ND_NUMBER])
 203-- right ---409
 100-- then ---203
+407([ND_ASSIGN])
+408([ND_LVAL])
+407-- left ---408
+817([ND_NUMBER])
+407-- right ---817
+100-- else ---407
 200([ND_RETURN])
 201([ND_LVAL])
 200-- left ---201

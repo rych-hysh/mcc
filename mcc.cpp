@@ -154,5 +154,11 @@ int print_node(Node *_node, int _id, ofstream *_file)
     *_file << this_id << "-- then ---" << tmp_id << endl; 
     _id += tmp_id;
   }
+    if (_node->elseNode)
+  {
+    tmp_id = print_node(_node->elseNode, ++_id, _file);
+    *_file << this_id << "-- else ---" << tmp_id << endl; 
+    _id += tmp_id;
+  }
   return this_id;
 }
