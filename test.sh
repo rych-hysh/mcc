@@ -9,6 +9,7 @@ assert(){
   actual="$?"
   if [ "$actual" = "$expected" ]; then
     echo "$input => $actual"
+    echo OK;
   else
     echo "$input => $expected expected, but got $actual"
     exit 1
@@ -37,4 +38,6 @@ assert 16 'foo = 2; var = 3; s = foo * var;return 2*(s+2);'
 assert 1 "a=2;if(a==2)a = 1;return a;"
 assert 3 "a=2;if(a!=2)a = 1;else a=3;return a;"
 assert 4 "i = 0; while(i < 4) i=i+1; return i;"
-echo OK
+assert 5 "hoge = 2; for(i=0; i< 3; i=i+1)hoge = hoge + i; return hoge;"
+assert 2 "hoge = 2; for(;i!=12;)i=12;return hoge;"
+echo "ALL OK"

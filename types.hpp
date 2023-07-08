@@ -41,6 +41,7 @@ enum NodeType
   ND_RETURN, // return
   ND_IF,
   ND_WHILE,
+  ND_FOR,
   ND_NUMBER, // 整数
 };
 
@@ -54,6 +55,8 @@ struct Node
   Node *condNode;
   Node *thenNode;
   Node *elseNode;
+  Node *initNode;
+  Node *loopNode;
   int value;  //typeがND_NUMBERの時その値
   int offset; //typeがND_LVALの場合のベースポインタからのオフセット
 };

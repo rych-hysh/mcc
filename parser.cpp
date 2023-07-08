@@ -51,6 +51,16 @@ Node *Parser::new_node_while(Node *_cond, Node *_then){
   return new_node;
 }
 
+Node *Parser::new_node_for(Node *_init, Node *_cond, Node *_loop, Node *_then){
+  Node *new_node = (Node *) calloc(1, sizeof(Node));
+  new_node->type = NodeType::ND_FOR;
+  new_node->initNode = _init;
+  new_node->condNode = _cond;
+  new_node->loopNode = _loop;
+  new_node->thenNode = _then;
+  return new_node;
+}
+
 Node **Parser::program()
 {
   while (!at_eof())
@@ -83,6 +93,23 @@ Node *Parser::stmt()
   } else if(consume("while", TokenType::TK_RESERVED)){
     expect("(");
     node = new_node_while(expr(), NULL);
+    expect(")");
+    node->thenNode = stmt();
+    return node;
+  } else if(consume("for", TokenType::TK_RESERVED)){
+    expect("(");
+    node = new_node_for(NULL, NULL, NULL, NULL);
+    if(!is_proccessing(";", TokenType::TK_SYMBOL)){
+      node->initNode = expr();
+    };
+    expect(";");
+    if(!is_proccessing(";", TokenType::TK_SYMBOL)){
+      node->condNode = expr();
+    }
+    expect(";");
+    if(!is_proccessing(")", TokenType::TK_SYMBOL)){
+      node->loopNode = expr();
+    }
     expect(")");
     node->thenNode = stmt();
     return node;
@@ -284,6 +311,13 @@ int Parser::expect_number()
   int value = token_proccessing->value;
   token_proccessing = token_proccessing->next;
   return value;
+}
+
+bool Parser::is_proccessing(const char* _expected, TokenType _TK_TYPE){
+  if(token_proccessing->type != _TK_TYPE || memcmp(token_proccessing->str, _expected, token_proccessing->length) ){
+    return false;
+  }
+  return true;
 }
 
 bool Parser::at_eof()

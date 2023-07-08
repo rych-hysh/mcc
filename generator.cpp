@@ -96,6 +96,29 @@ void Generator::gen(Node *_node)
     printf(".Lend_mcc%d:\n", global_label_index);
     global_label_index++;
     return;
+  case NodeType::ND_FOR:
+    if(_node->initNode){
+      gen(_node->initNode);
+    }
+    printf(".Lbegin_mcc%d:\n", global_label_index);
+    if(_node->condNode){
+      gen(_node->condNode);
+    }else{
+      printf("  push 1");
+    }
+    printf("  pop rax\n");
+    printf("  cmp rax, 0\n");
+    printf("  je .Lend_mcc%d\n", global_label_index);
+    if(_node->thenNode){
+      gen(_node->thenNode);
+    }
+    if(_node->loopNode){
+      gen(_node->loopNode);
+    }
+    printf("  jmp .Lbegin_mcc%d\n", global_label_index);
+    printf(".Lend_mcc%d:\n", global_label_index);
+    global_label_index++;
+    return;
   }
 
   gen(_node->leftHandSideNode);

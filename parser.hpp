@@ -23,6 +23,7 @@ private:
   Node *new_node_num(int _value);
   Node *new_node_if(Node* _cond, Node* _then ,Node* _else);
   Node *new_node_while(Node *_cond, Node *_then);
+  Node *new_node_for(Node *_init, Node *_cond, Node *_loop, Node *_then);
   
   LocalVariable *find_local_var(Token *_token);
 
@@ -36,7 +37,7 @@ private:
   int expect_number();
 
   //処理しているトークンの次のトークンを先読みし、期待するTokenならtrue,　それ以外ならfalseを返す。token_proccessingは変更しない。
-  bool is_next(const char *_expected, TokenType _expected_type);
+  bool is_proccessing(const char *_expected, TokenType _expected_type);
 
   bool at_eof();
 

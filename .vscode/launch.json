@@ -9,7 +9,7 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${fileDirname}/${fileBasenameNoExtension}",
-      "args": ["a=2;if(a!=2)a = 1;else a=3;return a;"],
+      "args": ["hoge = 2; for(;i!=12;)i=12;return hoge;"],
       "stopAtEntry": false,
       "cwd": "${fileDirname}",
       "environment": [],
