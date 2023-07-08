@@ -83,6 +83,7 @@ Token *Tokenizer::tokenize(char *_p)
       continue;
     }
 
+    //TODO: TK_RESERVEDは関数にまとめる
     if (strncmp(_p, "return", 6) == 0 && !is_token_char(_p[6])) {
       current = new_token(TokenType::TK_RESERVED, current, _p, 6);
       _p += 6;
@@ -91,6 +92,16 @@ Token *Tokenizer::tokenize(char *_p)
     if (strncmp(_p, "if", 2) == 0 && !is_token_char(_p[2])) {
       current = new_token(TokenType::TK_RESERVED, current, _p, 2);
       _p += 2;
+      continue;
+    }
+      if (strncmp(_p, "else", 4) == 0 && !is_token_char(_p[4])) {
+      current = new_token(TokenType::TK_RESERVED, current, _p, 4);
+      _p += 4;
+      continue;
+    }
+    if(strncmp(_p, "while", 5) == 0 && !is_token_char(_p[5])){
+      current = new_token(TokenType::TK_RESERVED, current, _p, 5);
+      _p += 5;
       continue;
     }
 
@@ -110,15 +121,6 @@ Token *Tokenizer::tokenize(char *_p)
       while(is_token_char(*++_p)){
         len++;
       }
-      bool reserved = false;
-      for(string w : RESERVED_WORDS){
-        if(!memcmp(w.c_str(), token_char, len)){
-          current = new_token(TokenType::TK_RESERVED, current, token_char, len);
-          reserved = true;
-          break;
-        }
-      }
-      if(reserved)continue;
       current = new_token(TokenType::TK_IDENTIFIER, current, token_char, len);
       continue;
     }

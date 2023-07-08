@@ -36,4 +36,5 @@ assert 1 'index=0; index=index+1; return index;'
 assert 16 'foo = 2; var = 3; s = foo * var;return 2*(s+2);'
 assert 1 "a=2;if(a==2)a = 1;return a;"
 assert 3 "a=2;if(a!=2)a = 1;else a=3;return a;"
+assert 4 "i = 0; while(i < 4) i=i+1; return i;"
 echo OK

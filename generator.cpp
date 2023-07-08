@@ -85,6 +85,17 @@ void Generator::gen(Node *_node)
       gen(_node->elseNode);
     }
     return;
+  case NodeType::ND_WHILE:
+    printf(".Lbegin_mcc%d:\n", global_label_index);
+    gen(_node->condNode);
+    printf("  pop rax\n");
+    printf("  cmp rax, 0\n");
+    printf("  je .Lend_mcc%d\n", global_label_index);
+    gen(_node->thenNode);
+    printf("  jmp .Lbegin_mcc%d\n", global_label_index);
+    printf(".Lend_mcc%d:\n", global_label_index);
+    global_label_index++;
+    return;
   }
 
   gen(_node->leftHandSideNode);

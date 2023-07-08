@@ -72,6 +72,13 @@ Node *Parser::stmt()
       node->elseNode = stmt();
     }
     return node;
+  } else if(consume("while", TokenType::TK_RESERVED)){
+    expect("(");
+    node->type = ND_WHILE;
+    node->condNode = expr();
+    expect(")");
+    node->thenNode = stmt();
+    return node;
   } else {
     node = expr();
   }

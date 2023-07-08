@@ -40,6 +40,7 @@ enum NodeType
   ND_LVAL,   // ローカル変数
   ND_RETURN, // return
   ND_IF,
+  ND_WHILE,
   ND_NUMBER, // 整数
 };
 

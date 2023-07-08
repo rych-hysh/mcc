@@ -126,6 +126,8 @@ string get_ND_type(int id){
   case 13:
     return "ND_IF";
   case 14:
+    return "ND_WHILE";
+  case 15:
     return "ND_NUMBER";
   default:
     return "ND_TYPE_ERROR";
