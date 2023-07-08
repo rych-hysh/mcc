@@ -10,26 +10,6 @@
 
 using namespace std;
 
-void Tokenizer::error(string _message, ...)
-{
-  va_list ap;
-  va_start(ap, _message);
-  _message.append("\n");
-  fprintf(stderr, _message.c_str(), ap);
-  exit(1);
-}
-// TODO: STEP4　改良
-void Tokenizer::error(const char *_fmt, ...)
-{
-  va_list ap;
-  va_start(ap, _fmt);
-
-  vfprintf(stderr, _fmt, ap);
-
-  fprintf(stderr, "\n");
-  exit(1);
-}
-
 //新しいトークンを作成してcurrent tokenに繋げる
 Token *Tokenizer::new_token(TokenType _type, Token *_current, char *_str, int _length)
 {
@@ -51,6 +31,19 @@ bool Tokenizer::is_token_char(char _c){
          ('A' <= _c && _c <= 'Z') ||
          ('0' <= _c && _c <= '9') ||
          (_c == '_');
+}
+
+bool Tokenizer::is_reserved(char **_p, Token **_current){
+  const char* tmp[] = {"return", "if", "else", "while", "for"};
+  for (int i = 0; i < 5; i++)
+  {
+    if(strncmp(*_p, tmp[i], strlen(tmp[i])) == 0){
+      *_current = new_token(TokenType::TK_RESERVED, *_current, *_p, strlen(tmp[i]));
+      *_p+=strlen(tmp[i]);
+      return true;
+    }
+  }
+  return false;
 }
 
 ///入力文字列pをトークナイズして返す
@@ -83,27 +76,7 @@ Token *Tokenizer::tokenize(char *_p)
       continue;
     }
 
-    //TODO: TK_RESERVEDは関数にまとめる
-    if (strncmp(_p, "return", 6) == 0 && !is_token_char(_p[6])) {
-      current = new_token(TokenType::TK_RESERVED, current, _p, 6);
-      _p += 6;
-      continue;
-    }
-    if (strncmp(_p, "if", 2) == 0 && !is_token_char(_p[2])) {
-      current = new_token(TokenType::TK_RESERVED, current, _p, 2);
-      _p += 2;
-      continue;
-    }
-      if (strncmp(_p, "else", 4) == 0 && !is_token_char(_p[4])) {
-      current = new_token(TokenType::TK_RESERVED, current, _p, 4);
-      _p += 4;
-      continue;
-    }
-    if(strncmp(_p, "while", 5) == 0 && !is_token_char(_p[5])){
-      current = new_token(TokenType::TK_RESERVED, current, _p, 5);
-      _p += 5;
-      continue;
-    }
+    if(is_reserved(&_p, &current))continue;
 
     if (isdigit(*_p))
     {

@@ -43,6 +43,14 @@ Node *Parser::new_node_if(Node *_cond, Node *_then, Node *_else){
   return new_node;
 }
 
+Node *Parser::new_node_while(Node *_cond, Node *_then){
+  Node *new_node = (Node *) calloc(1, sizeof(Node));
+  new_node->type = NodeType::ND_WHILE;
+  new_node->condNode = _cond;
+  new_node->thenNode = _then;
+  return new_node;
+}
+
 Node **Parser::program()
 {
   while (!at_eof())
@@ -74,8 +82,7 @@ Node *Parser::stmt()
     return node;
   } else if(consume("while", TokenType::TK_RESERVED)){
     expect("(");
-    node->type = ND_WHILE;
-    node->condNode = expr();
+    node = new_node_while(expr(), NULL);
     expect(")");
     node->thenNode = stmt();
     return node;
@@ -241,26 +248,6 @@ LocalVariable *Parser::find_local_var(Token *_token)
 // TODO: たぶんこれでconsumeとconsume_reservedをまとめられるのでconsume()とconsume_resserved()削除
 Token *Parser::consume(const char *_str, TokenType _TK_TYPE){
   if (token_proccessing->type != _TK_TYPE || strlen(_str) != token_proccessing->length || memcmp(token_proccessing->str, _str, token_proccessing->length))
-    return NULL;
-  Token *consumed = token_proccessing;
-  token_proccessing = token_proccessing->next;
-  return consumed;
-}
-
-// maybe _op means operando
-// 次のtokenが期待している記号の時にはトークンを１つ読み進めて真を返す。それ以外の場合は偽を返す。
-Token *Parser::consume(const char *_op)
-{
-  if (token_proccessing->type != TokenType::TK_SYMBOL || strlen(_op) != token_proccessing->length || memcmp(token_proccessing->str, _op, token_proccessing->length))
-    return NULL;
-  Token *consumed = token_proccessing;
-  token_proccessing = token_proccessing->next;
-  return consumed;
-}
-
-Token *Parser::consume_reserved(const char *_reserved)
-{
-  if (token_proccessing->type != TK_RESERVED || memcmp(token_proccessing->str, _reserved, token_proccessing->length))
     return NULL;
   Token *consumed = token_proccessing;
   token_proccessing = token_proccessing->next;
