@@ -7,3 +7,4 @@ parser
 tokenizer
 generator
 *.log
+*.md
