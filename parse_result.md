@@ -11,7 +11,7 @@ flowchart TD
 101-- left ---102
 205([ND_NUMBER])
 101-- right ---205
-100-- left ---101
+100-- cond ---101
 203([ND_ASSIGN])
 204([ND_LVAL])
 203-- left ---204

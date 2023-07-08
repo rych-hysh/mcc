@@ -34,6 +34,15 @@ Node *Parser::new_node_num(int _value)
   return new_node;
 }
 
+Node *Parser::new_node_if(Node *_cond, Node *_then, Node *_else){
+  Node *new_node = (Node *) calloc(1, sizeof(Node));
+  new_node->type = NodeType::ND_IF;
+  new_node->condNode = _cond;
+  new_node->thenNode = _then;
+  new_node->elseNode = _else;
+  return new_node;
+}
+
 Node **Parser::program()
 {
   while (!at_eof())
@@ -53,7 +62,10 @@ Node *Parser::stmt()
     node = new_node(NodeType::ND_RETURN, expr(), NULL);
   } else if(consume("if", TokenType::TK_RESERVED)){
     expect("(");
-    node = new_node(NodeType::ND_IF, expr(), NULL);
+    //node->type = NodeType::ND_IF;
+    //node->condNode = expr();
+    //node = new_node(ND_IF, expr(), NULL);
+    node = new_node_if(expr(), NULL, NULL);
     expect(")");
     node->thenNode = stmt();
     if(consume("else", TokenType::TK_RESERVED)){

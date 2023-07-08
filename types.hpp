@@ -50,6 +50,7 @@ struct Node
   Node *leftHandSideNode;
   Node *rightHandSideNode;
 
+  Node *condNode;
   Node *thenNode;
   Node *elseNode;
   int value;  //typeがND_NUMBERの時その値

@@ -148,6 +148,12 @@ int print_node(Node *_node, int _id, ofstream *_file)
     *_file << this_id << "-- right ---" << tmp_id << endl; 
     _id += tmp_id;
   }
+    if (_node->condNode)
+  {
+    tmp_id = print_node(_node->condNode, ++_id, _file);
+    *_file << this_id << "-- cond ---" << tmp_id << endl; 
+    _id += tmp_id;
+  }
   if (_node->thenNode)
   {
     tmp_id = print_node(_node->thenNode, ++_id, _file);

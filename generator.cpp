@@ -69,7 +69,7 @@ void Generator::gen(Node *_node)
     printf("  ret\n");
     return;
   case NodeType::ND_IF:
-    gen(_node->leftHandSideNode);
+    gen(_node->condNode);
     // IF文の結果が真ならスタックトップに1が、偽なら０が入っている
     printf("  pop rax\n");
     // スタックトップが０（IFが偽）なら次の処理を飛ばす

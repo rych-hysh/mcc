@@ -12,6 +12,7 @@ public:
   Node *new_node(NodeType _type, Node *_lhs, Node *_rhs);
 
   Node *new_node_num(int _value);
+  Node *new_node_if(Node*,Node*,Node*);
 
 private:
   char *raw_input;
