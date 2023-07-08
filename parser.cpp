@@ -113,6 +113,15 @@ Node *Parser::stmt()
     expect(")");
     node->thenNode = stmt();
     return node;
+  } else if(consume("{")){
+      node = (Node *) calloc(1, sizeof(Node));
+      node->type = NodeType::ND_BLOCK;
+      Node *head = node;
+    while(!consume("}")){
+      node->thenNode = stmt();
+      node = node->thenNode;
+    }
+    return head;
   } else {
     node = expr();
   }

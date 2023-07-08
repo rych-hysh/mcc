@@ -42,6 +42,7 @@ enum NodeType
   ND_IF,
   ND_WHILE,
   ND_FOR,
+  ND_BLOCK,
   ND_NUMBER, // 整数
 };
 

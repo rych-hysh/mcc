@@ -119,6 +119,16 @@ void Generator::gen(Node *_node)
     printf(".Lend_mcc%d:\n", global_label_index);
     global_label_index++;
     return;
+  case NodeType::ND_BLOCK:
+    while(_node->thenNode){
+      gen(_node->thenNode);
+      // TODO:
+      // ↓rui ueyamaさんの教科書によると必要らしい。
+      // 今のところなくても動くけど必要になったらコメントを外す
+      //printf("  pop rax\n");
+      _node = _node->thenNode;
+    }
+    return;
   }
 
   gen(_node->leftHandSideNode);
