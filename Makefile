@@ -12,6 +12,6 @@ test: mcc
 	./test.sh
 
 clean: 
-	rm -f mcc *.o *~ tmp* *.log parser tokenizer util generator
+	rm -f mcc *.o *~ tmp* *.log *.md parser tokenizer util generator test
 
 .PHONY: test clean
