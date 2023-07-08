@@ -7,6 +7,7 @@
 #include <bits/stdc++.h>
 
 #include "tokenizer.hpp"
+#include "util.hpp"
 
 using namespace std;
 
