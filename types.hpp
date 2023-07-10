@@ -43,7 +43,7 @@ enum NodeType
   ND_WHILE,
   ND_FOR,
   ND_BLOCK,
-  ND_FUNC,
+  ND_FUNCCALL,
   ND_NUMBER, // 整数
 };
 
