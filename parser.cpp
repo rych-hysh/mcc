@@ -74,7 +74,7 @@ Node **Parser::program()
 Node *Parser::func(){
   Node *func_node = (Node *)calloc(1, sizeof(Node));
   char *func_name = expect_identifier();
-
+  func_node->identifier = func_name;
   expect("(");
   func_node->type = NodeType::ND_FUNC;
   //TODO: 引数をとる関数の実装

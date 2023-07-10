@@ -80,8 +80,6 @@ int main(int argc, char **argv)
 
   Generator *generator = new Generator();
 
-  generator->gen_prologue();
-
   int i = 0;
   while (statement[i])
   {
@@ -89,8 +87,6 @@ int main(int argc, char **argv)
     generator->gen(statement[i++]);
     // printf("  pop rax\n");
   }
-
-  generator->gen_epilogue();
 
   return 0;
 }
