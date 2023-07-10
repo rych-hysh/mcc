@@ -43,6 +43,7 @@ enum NodeType
   ND_WHILE,
   ND_FOR,
   ND_BLOCK,
+  ND_FUNC,
   ND_NUMBER, // 整数
 };
 
@@ -60,6 +61,7 @@ struct Node
   Node *loopNode;
   int value;  //typeがND_NUMBERの時その値
   int offset; //typeがND_LVALの場合のベースポインタからのオフセット
+  char *identifier;
 };
 
 struct LocalVariable {

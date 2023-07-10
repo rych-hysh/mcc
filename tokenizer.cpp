@@ -70,7 +70,7 @@ Token *Tokenizer::tokenize(char *_p)
     }
 
     //入力文字列が+か-ならTK_SYMBOL typeのトークンを追加して次の文字へ
-    if (strchr("+-*/()=<>;{}", *_p))
+    if (strchr("+-*/()=<>;{},", *_p))
     {
       //引数に_p++を渡すことでpを渡しつつpを一つ進めてる。テクい。++pとの違いが出てる。
       current = new_token(TokenType::TK_SYMBOL, current, _p++, 1);

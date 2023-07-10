@@ -21,6 +21,28 @@ Token *head_token;
 bool debug_flag = true;
 int print_node(Node* _n, int _i, ofstream* _f);
 
+string get_TK_TYPE(int _code){
+  switch (_code)
+  {
+  case 0:
+    return "TK_SYMBOL";
+  case 1:
+    return "TK_NUMBER";
+  case 2:
+    return "TK_IDENTIFIER";
+  case 3:
+    return "TK_RETURN";
+  case 4:
+    return "TK_IF";
+  case 5:
+    return "TK_RESERVED";
+  case 6:
+    return "TK_EOF";
+  default:
+    break;
+  }
+}
+
 int main(int argc, char **argv)
 {
   if (argc != 2)
@@ -47,7 +69,7 @@ int main(int argc, char **argv)
       {
         writing_file << head_token->str[i] << flush;
       }
-      writing_file << "', " << flush;
+      writing_file << "'\t" << ":" << "\t" << get_TK_TYPE(head_token->type) << endl;
       head_token = head_token->next;
     }
     writing_file << "EOF" << endl;
@@ -132,6 +154,8 @@ string get_ND_type(int id){
   case 16:
     return "ND_BLOCK";
   case 17:
+    return "ND_FUNC";
+  case 18:
     return "ND_NUMBER";
   default:
     return "ND_TYPE_ERROR";

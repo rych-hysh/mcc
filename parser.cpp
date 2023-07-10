@@ -244,6 +244,13 @@ Node *Parser::primary()
   Token *identifier = consume_identifier();
   if (identifier)
   {
+    if(consume("(") && consume(")")){
+      Node *node = (Node *)calloc(1, sizeof(Node));
+      node->type = NodeType::ND_FUNC;
+      node->identifier = (char *)malloc(identifier->length * sizeof(char));
+      strncpy(node->identifier, identifier->str, identifier->length);
+      return node;
+    }
     Node *node = (Node *)calloc(1, sizeof(Node));
     node->type = ND_LVAL;
 
