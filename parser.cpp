@@ -75,6 +75,11 @@ Node *Parser::stmt()
 {
   //if(consume(";", TokenType::TK_SYMBOL))return new_node_num(1);
   Node *node = (Node *)calloc(1, sizeof(Node));
+  // if(is_identifier(token_proccessing)){
+  //   if(is_token(token_proccessing->next, TK_SYMBOL, "(")){
+
+  //   }
+  // } 
   if (consume("return", TokenType::TK_RESERVED))
   {
     node = new_node(NodeType::ND_RETURN, expr(), NULL);
@@ -246,7 +251,7 @@ Node *Parser::primary()
   {
     if(consume("(") && consume(")")){
       Node *node = (Node *)calloc(1, sizeof(Node));
-      node->type = NodeType::ND_FUNC;
+      node->type = NodeType::ND_FUNCCALL;
       node->identifier = (char *)malloc(identifier->length * sizeof(char));
       strncpy(node->identifier, identifier->str, identifier->length);
       return node;
@@ -336,6 +341,10 @@ bool Parser::is_proccessing(const char* _expected, TokenType _TK_TYPE){
   return true;
 }
 
+bool Parser::is_identifier(Token *_token){
+  if(_token->type != TK_IDENTIFIER)return false;
+  return true;
+}
 bool Parser::at_eof()
 {
   return token_proccessing->type == TokenType::TK_EOF;

@@ -39,6 +39,8 @@ private:
   //処理しているトークンの次のトークンを先読みし、期待するTokenならtrue,　それ以外ならfalseを返す。token_proccessingは変更しない。
   bool is_proccessing(const char *_expected, TokenType _expected_type);
 
+  bool is_identifier(Token *_token);
+  bool is_token(Token *_token, TokenType _expected_type, const char *_expected);
   bool at_eof();
 
   Node **program();

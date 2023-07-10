@@ -129,7 +129,7 @@ void Generator::gen(Node *_node)
       _node = _node->thenNode;
     }
     return;
-  case NodeType::ND_FUNC:
+  case NodeType::ND_FUNCCALL:
     printf("  call %s\n", _node->identifier);
     printf("  push rax\n");
     return;
