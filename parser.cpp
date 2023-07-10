@@ -65,10 +65,33 @@ Node **Parser::program()
 {
   while (!at_eof())
   {
-    statement[statement_index++] = stmt();
+    statement[statement_index++] = func();
   }
   statement[statement_index] = NULL;
   return statement;
+}
+
+Node *Parser::func(){
+  Node *func_node = (Node *)calloc(1, sizeof(Node));
+  char *func_name = expect_identifier();
+
+  expect("(");
+  func_node->type = NodeType::ND_FUNC;
+  //TODO: 引数をとる関数の実装
+  while(is_identifier(token_proccessing)){
+    Node *node = (Node *)calloc(1, sizeof(Node));
+    Token *consumed = consume_identifier();
+    node->type=ND_LVAL;
+    //TODO: 引数をとる関数の実装
+  }
+  expect(")");
+  expect("{");
+  Node *res_node = func_node;
+  while(!consume("}")){   
+    func_node->next = stmt();
+    func_node = func_node->next;
+  }
+  return res_node;
 }
 
 Node *Parser::stmt()
@@ -332,6 +355,14 @@ int Parser::expect_number()
   int value = token_proccessing->value;
   token_proccessing = token_proccessing->next;
   return value;
+}
+
+char *Parser::expect_identifier(){
+  if(token_proccessing->type != TK_IDENTIFIER)error_at(raw_input, token_proccessing->str, "identifierではありません。");
+  char *identifier = (char *)malloc(token_proccessing->length * sizeof(char));
+  strncpy(identifier, token_proccessing->str, token_proccessing->length);
+  token_proccessing = token_proccessing->next;
+  return identifier;
 }
 
 bool Parser::is_proccessing(const char* _expected, TokenType _TK_TYPE){

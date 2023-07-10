@@ -82,8 +82,10 @@ std::string get_ND_type(int _code){
   case 16:
     return "ND_BLOCK";
   case 17:
-    return "ND_FUNCCALL";
+    return "ND_FUCN";
   case 18:
+    return "ND_FUNCCALL";
+  case 19:
     return "ND_NUMBER";
   default:
     return "ND_TYPE_ERROR";
@@ -134,6 +136,12 @@ int print_node(Node *_node, int _id, std::ofstream *_file)
   {
     tmp_id = print_node(_node->loopNode, ++_id, _file);
     *_file << this_id << "-- loop ---" << tmp_id << std::endl; 
+    _id += tmp_id;
+  }
+    if (_node->next)
+  {
+    tmp_id = print_node(_node->next, ++_id, _file);
+    *_file << this_id << "-- next ---" << tmp_id << std::endl; 
     _id += tmp_id;
   }
   return this_id;

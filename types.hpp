@@ -43,6 +43,7 @@ enum NodeType
   ND_WHILE,
   ND_FOR,
   ND_BLOCK,
+  ND_FUNC,
   ND_FUNCCALL,
   ND_NUMBER, // 整数
 };
@@ -54,11 +55,15 @@ struct Node
   Node *leftHandSideNode;
   Node *rightHandSideNode;
 
+  Node *next;
+
   Node *condNode;
   Node *thenNode;
   Node *elseNode;
   Node *initNode;
   Node *loopNode;
+
+  Node *args;
   int value;  //typeがND_NUMBERの時その値
   int offset; //typeがND_LVALの場合のベースポインタからのオフセット
   char *identifier;

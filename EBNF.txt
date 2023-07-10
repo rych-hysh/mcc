@@ -1,3 +1,4 @@
+
 program = stmt*
 stmt = expr ";" 
 			| block 
@@ -6,6 +7,22 @@ stmt = expr ";"
 			| "for" "(" expr? ";" expr? ";" expr? ")" stmt
 			| ident "(" ident? ("," ident)*? ")" "{" stmt "}"
 block = "{" stmt* "}"
+expr = assign
+assign = equality ( "=" assign)?
+equality = relational ("==" relational | "!=" relational)*
+relational = add ("<" add | "<=" add | ">" add | ">=" add)*
+add = mul ( "+" mul | "-" mul)*
+mul = unary ( "*" unary | "/" unary)*
+unary = ("+" | "-")? primary
+primary = num | "(" expr ")" | ident | ident"()"
+
+program = func*
+func = ident "(" ident? ("," ident)*? ")" "{" stmt* "}"
+stmt = expr ";" 
+			| "{" stmt* "}" 
+			| "if" "(" expr ")" stmt ("else" stmt)? 
+			| "while" "(" expr ")" stmt 
+			| "for" "(" expr? ";" expr? ";" expr? ")" stmt
 expr = assign
 assign = equality ( "=" assign)?
 equality = relational ("==" relational | "!=" relational)*

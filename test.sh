@@ -16,6 +16,8 @@ assert(){
   fi
 }
 
+assert 2 "main(){a=2;return a;}"
+exit 0
 assert 5 "a=2;if(a==2)a=5;return a;"
 assert 1 "3==3;"
 assert 0 "0;"
