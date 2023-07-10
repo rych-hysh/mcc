@@ -6,6 +6,7 @@ mcc
 parser
 tokenizer
 generator
+util
 *.log
 *.md
 memo.txt
