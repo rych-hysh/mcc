@@ -14,7 +14,7 @@ public:
 private:
   char *raw_input;
   Token *token_proccessing;
-  Function *funcsions[100];
+  Function *functions[100];
   int funcs_index = 0;
 
   //指定したNodeを生成

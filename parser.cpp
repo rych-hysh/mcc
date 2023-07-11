@@ -63,14 +63,14 @@ Function **Parser::program()
 {
   while (!at_eof())
   {
-    funcsions[funcs_index] = (Function *)calloc(1, sizeof(Function));
-    funcsions[funcs_index]->local_var = (LocalVariable *)calloc(1, sizeof(LocalVariable));
-    funcsions[funcs_index]->local_var->offset = 0;
-    funcsions[funcs_index]->Func_top_node = func();
+    functions[funcs_index] = (Function *)calloc(1, sizeof(Function));
+    functions[funcs_index]->local_var = (LocalVariable *)calloc(1, sizeof(LocalVariable));
+    functions[funcs_index]->local_var->offset = 0;
+    functions[funcs_index]->Func_top_node = func();
     funcs_index++;
   }
-  funcsions[funcs_index] = NULL;
-  return funcsions;
+  functions[funcs_index] = NULL;
+  return functions;
 }
 
 Node *Parser::func(){
@@ -293,12 +293,12 @@ Node *Parser::primary()
     else
     {
       lvar = (LocalVariable *)calloc(1, sizeof(LocalVariable));
-      lvar->next = funcsions[funcs_index]->local_var;
+      lvar->next = functions[funcs_index]->local_var;
       lvar->name = identifier->str;
       lvar->length = identifier->length;
-      lvar->offset = funcsions[funcs_index]->local_var->offset + 8;
+      lvar->offset = functions[funcs_index]->local_var->offset + 8;
       node->offset = lvar->offset;
-      funcsions[funcs_index]->local_var = lvar;
+      functions[funcs_index]->local_var = lvar;
     }
     return node;
   }
@@ -308,7 +308,7 @@ Node *Parser::primary()
 
 LocalVariable *Parser::find_local_var(Token *_token)
 {
-  for (LocalVariable *var = funcsions[funcs_index]->local_var; var; var = var->next)
+  for (LocalVariable *var = functions[funcs_index]->local_var; var; var = var->next)
   {
     if (var->length == _token->length && !memcmp(_token->str, var->name, var->length))
     {
