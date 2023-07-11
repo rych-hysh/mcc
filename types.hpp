@@ -48,6 +48,13 @@ enum NodeType
   ND_NUMBER, // 整数
 };
 
+struct LocalVariable {
+  LocalVariable *next;  // 次の変数かNULL
+  char *name;           // 変数の名前
+  int length;           // 変数名の長さ
+  int offset;           // RBPからのオフセット
+};
+
 //抽象構文木のノードの型
 struct Node
 {
@@ -64,14 +71,14 @@ struct Node
   Node *loopNode;
 
   Node *args;
+
+  LocalVariable *local_vars;
   int value;  //typeがND_NUMBERの時その値
   int offset; //typeがND_LVALの場合のベースポインタからのオフセット
   char *identifier;
 };
 
-struct LocalVariable {
-  LocalVariable *next;  // 次の変数かNULL
-  char *name;           // 変数の名前
-  int length;           // 変数名の長さ
-  int offset;           // RBPからのオフセット
+struct Function{
+  Node *Func_top_node;
+  LocalVariable *local_var;
 };

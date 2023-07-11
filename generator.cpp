@@ -28,7 +28,7 @@ void Generator::gen_prologue()
   // 変数26個分の領域を確保する(26 * 8 = 208)
   printf("  push rbp\n");
   printf("  mov rbp, rsp\n");
-  printf("  sub rsp, 16\n");
+  printf("  sub rsp, 8\n");
 }
 
 void Generator::gen_epilogue()

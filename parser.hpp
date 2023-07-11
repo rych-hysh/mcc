@@ -7,16 +7,15 @@ class Parser
 public:
   Parser(char *_raw_input);
 
-  Node **parse(Token *_head_token);
+  Function **parse(Token *_head_token);
 
 
 
 private:
   char *raw_input;
   Token *token_proccessing;
-  Node *statement[100];
-  int statement_index = 0;
-  LocalVariable *locals;
+  Function *funcsions[100];
+  int funcs_index = 0;
 
   //指定したNodeを生成
   Node *new_node(NodeType _type, Node *_lhs, Node *_rhs);
@@ -44,7 +43,7 @@ private:
   bool is_token(Token *_token, TokenType _expected_type, const char *_expected);
   bool at_eof();
 
-  Node **program();
+  Function **program();
 
   Node *func();
 

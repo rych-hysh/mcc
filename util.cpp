@@ -96,6 +96,18 @@ int print_node(Node *_node, int _id, std::ofstream *_file)
   int this_id = _id;
   int tmp_id;
   *_file << this_id << "([" << get_ND_type(_node->type) << "])" << std::endl;
+  if(_node->type == NodeType::ND_FUNC){
+    LocalVariable *tmp_var = _node->local_vars;
+    int vi = 0;
+    while(tmp_var){
+      *_file << this_id << "l" << vi++ << "(" << tmp_var->offset << ")" << std::endl;
+      if(!tmp_var->next)break;
+      tmp_var = tmp_var->next;
+    }
+    for(int i = 0; i< vi;i++){
+      *_file << this_id << "-- " << "l_var:" << i << " ---" << this_id << "l" << i << std::endl;
+    }
+  }
   if (_node->leftHandSideNode)
   {
     tmp_id = print_node(_node->leftHandSideNode, ++_id, _file);

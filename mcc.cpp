@@ -58,7 +58,7 @@ int main(int argc, char **argv)
   // エラー箇所表示のためプログラム本文をparserにも渡す
   Parser *parser = new Parser(reading_program);
   // 入力をtoken(単語)に分割し、最初のtokenをtoken_proccessingに代入
-  Node **statement = parser->parse(head_token);
+  Function **funcs = parser->parse(head_token);
 
   if (debug_flag)
   {
@@ -68,11 +68,11 @@ int main(int argc, char **argv)
     writing_file.open(filename, ios::out);
     writing_file << "```mermaid" << endl;
     writing_file << "flowchart TD" << endl;
-    while (statement[n])
+    while (funcs[n])
     {
-      Node *db = statement[n];
+      Node *db = funcs[n]->Func_top_node;
       int id = n*100;
-      print_node(statement[n++], id, &writing_file);
+      print_node(funcs[n++]->Func_top_node, id, &writing_file);
     }
     writing_file << "```" << endl;
     writing_file.close();
@@ -81,10 +81,10 @@ int main(int argc, char **argv)
   Generator *generator = new Generator();
 
   int i = 0;
-  while (statement[i])
+  while (funcs[i])
   {
-    // 各文のトップノードを渡す
-    generator->gen(statement[i++]);
+    // 各関数のトップノードを渡す
+    generator->gen(funcs[i++]->Func_top_node);
     // printf("  pop rax\n");
   }
 

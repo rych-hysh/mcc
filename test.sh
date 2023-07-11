@@ -47,7 +47,6 @@ assert 21 "main(){a=2;b=4;for(i = 0; i< 5; i=i+1){a = a+1;b=b+2;}a = a+b;return 
 #最初の関数が実行される。定義しただけではその後の関数は呼ばれない。
 assert 2 "main(){a=2;return a;} notmain(){b=4;return b;}"
 assert 4 "main(){a=2;return notmain();} notmain(){b=4;return b;}"
-
-#assert 1 "main(){a=2; func(){return 3};a=func() - a;return a;}"
-#assert 8 "hoge = 2; for(;i!=12;)i=12;return hoge;func();"
+assert 6 "main(){a=2;b = notmain();return a+b;} notmain(){c=4;return c;}"
+assert 1 "main(){a=2;a=func() - a;return a;}func(){return 3;}"
 echo "ALL OK"
