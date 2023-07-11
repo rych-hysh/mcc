@@ -7,7 +7,6 @@ Generator::Generator()
 {
   printf(".intel_syntax noprefix\n");
   printf(".globl main\n");
-  printf("main:\n");
 }
 
 void Generator::gen_left_value(Node *node)
@@ -28,7 +27,6 @@ void Generator::gen_prologue()
   // 変数26個分の領域を確保する(26 * 8 = 208)
   printf("  push rbp\n");
   printf("  mov rbp, rsp\n");
-  printf("  sub rsp, 8\n");
 }
 
 void Generator::gen_epilogue()
@@ -130,10 +128,7 @@ void Generator::gen(Node *_node)
     }
     return;
   case NodeType::ND_FUNC:
-    //関数名がmainじゃないならラベルを作成。
-    if(strncmp(_node->identifier, "main", 4) != 0){
-      printf("%s:\n", _node->identifier);
-    };
+    printf("%s:\n", _node->identifier);
     gen_prologue();
     while(_node->next){
       gen(_node->next);
