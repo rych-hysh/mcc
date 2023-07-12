@@ -4,9 +4,9 @@
 .LC0:
 	.string	"OK"
 	.text
-	.globl	_Z4funcv
-	.type	_Z4funcv, @function
-_Z4funcv:
+	.globl	_Z4funciii
+	.type	_Z4funciii, @function
+_Z4funciii:
 .LFB0:
 	.cfi_startproc
 	endbr64
@@ -15,31 +15,34 @@ _Z4funcv:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	leaq	.LC0(%rip), %rax
-	movq	%rax, %rdi
+	subq	$16, %rsp
+	movl	%edi, -4(%rbp)
+	movl	%esi, -8(%rbp)
+	movl	%edx, -12(%rbp)
+	leaq	.LC0(%rip), %rdi
 	call	puts@PLT
 	movl	$3, %eax
-	popq	%rbp
+	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .LFE0:
-	.size	_Z4funcv, .-_Z4funcv
-	.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
+	.size	_Z4funciii, .-_Z4funciii
+	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"
 	.align 8
-	.long	1f - 0f
-	.long	4f - 1f
-	.long	5
+	.long	 1f - 0f
+	.long	 4f - 1f
+	.long	 5
 0:
-	.string	"GNU"
+	.string	 "GNU"
 1:
 	.align 8
-	.long	0xc0000002
-	.long	3f - 2f
+	.long	 0xc0000002
+	.long	 3f - 2f
 2:
-	.long	0x3
+	.long	 0x3
 3:
 	.align 8
 4:

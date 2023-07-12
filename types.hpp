@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <list>
 
 //Token(単語)の種別
 enum TokenType : int
@@ -55,6 +56,13 @@ struct LocalVariable {
   int offset;           // RBPからのオフセット
 };
 
+struct Node;
+
+struct Arg{
+  Node *node;
+  Arg *next;
+};
+
 //抽象構文木のノードの型
 struct Node
 {
@@ -70,7 +78,7 @@ struct Node
   Node *initNode;
   Node *loopNode;
 
-  Node *args;
+  Arg *arg;
 
   LocalVariable *local_vars;
   int value;  //typeがND_NUMBERの時その値

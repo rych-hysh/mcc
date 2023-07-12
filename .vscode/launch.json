@@ -9,7 +9,7 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${fileDirname}/${fileBasenameNoExtension}",
-      "args": ["main(){a=2;b = notmain();return a+b;} notmain(){c=4;return c;}"],
+      "args": ["main(){a=2;return notmain();} notmain(){b=4;return b;}"],
       "stopAtEntry": false,
       "cwd": "${fileDirname}",
       "environment": [],

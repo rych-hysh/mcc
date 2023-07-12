@@ -51,4 +51,6 @@ assert 1 "main(){a=2;a=func() - a;return a;}func(){return 3;}"
 assert 6 "main(){a=2;b = notmain();return a+b;} notmain(){c=4;return c;}"
 #main関数以外の関数定義が先
 assert 1 "func(){return 3;}main(){return func()-2;}"
+assert 6 "main(){a = 3; b = nonmain(1,2); return a+b;} nonmain(x, y){return x+y;}"
+assert 2 "main(){a = 1; b = func(1); return a+b;} func(x){c=2;return x;}"
 echo "ALL OK"

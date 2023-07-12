@@ -84,7 +84,7 @@ int main(int argc, char **argv)
   while (funcs[i])
   {
     // 各関数のトップノードを渡す
-    generator->gen(funcs[i++]->Func_top_node);
+    generator->start_gen(funcs[i++]);
     // printf("  pop rax\n");
   }
 

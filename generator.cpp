@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <list>
 
 #include "parser.hpp"
 #include "generator.hpp"
@@ -21,12 +22,20 @@ void Generator::gen_left_value(Node *node)
   printf("  push rax\n");
 }
 
-void Generator::gen_prologue()
+void Generator::gen_prologue(Node *_node)
 {
   // prologue
-  // 変数26個分の領域を確保する(26 * 8 = 208)
   printf("  push rbp\n");
   printf("  mov rbp, rsp\n");
+    std::list<char*> regs {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+  while(function_proccessing->local_var){
+    //現時点ではローカル変数のサイズは８固定なので各変数で８ずつ領域を確保する
+    printf("  sub rsp, 8\n");
+    printf("  mov rax, rsp\n");
+    printf("  mov [rax], %s\n", regs.front());
+    regs.pop_front();
+    function_proccessing->local_var = function_proccessing->local_var->next;
+  }
 }
 
 void Generator::gen_epilogue()
@@ -38,8 +47,16 @@ void Generator::gen_epilogue()
   printf("  pop rbp\n");
   printf("  ret\n");
 }
+
+void Generator::start_gen(Function *_function)
+{
+  function_proccessing = _function;
+  gen(function_proccessing->Func_top_node);
+}
 void Generator::gen(Node *_node)
 {
+
+  LocalVariable *lo_var = function_proccessing->local_var;
   switch (_node->type)
   {
   case NodeType::ND_NUMBER:
@@ -129,7 +146,7 @@ void Generator::gen(Node *_node)
     return;
   case NodeType::ND_FUNC:
     printf("%s:\n", _node->identifier);
-    gen_prologue();
+    gen_prologue(_node);
     while(_node->next){
       gen(_node->next);
       _node = _node->next;
@@ -137,6 +154,14 @@ void Generator::gen(Node *_node)
     gen_epilogue();
     return;
   case NodeType::ND_FUNCCALL:
+    std::list<char*> regs {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+    while(_node && _node->arg && _node->arg->node){
+      gen(_node->arg->node);
+      printf("  pop rax\n");
+      printf("  mov %s, rax\n", regs.front());
+      _node->arg = _node->arg->next;
+      regs.pop_front();
+    }
     printf("  call %s\n", _node->identifier);
     printf("  push rax\n");
     return;

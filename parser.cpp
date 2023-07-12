@@ -79,13 +79,30 @@ Node *Parser::func(){
   func_node->identifier = func_name;
   expect("(");
   func_node->type = NodeType::ND_FUNC;
-  //TODO: 引数をとる関数の実装
+  LocalVariable *head_var;
+  bool first = true;
+  //Function型にlocalvariableをくっつける
   while(is_identifier(token_proccessing)){
     Node *node = (Node *)calloc(1, sizeof(Node));
     Token *consumed = consume_identifier();
     node->type=ND_LVAL;
-    //TODO: 引数をとる関数の実装
+    if(first){
+      first = false;
+      head_var = (LocalVariable *)calloc(1, sizeof(LocalVariable));
+      head_var->offset = 0;
+      functions[funcs_index]->local_var = head_var;
+    }
+    LocalVariable *arg_variable = (LocalVariable *)calloc(1, sizeof(LocalVariable));
+    arg_variable->length = consumed->length;
+    arg_variable->name = consumed->str;
+    arg_variable->offset = functions[funcs_index]->local_var->offset + 8;
+    functions[funcs_index]->local_var->next = arg_variable;
+    functions[funcs_index]->local_var = functions[funcs_index]->local_var->next;
+
+    if(is_proccessing(")", TokenType::TK_SYMBOL))break;
+    expect(",");
   }
+  if(head_var)functions[funcs_index]->local_var = head_var->next;
   expect(")");
   expect("{");
   Node *res_node = func_node;
@@ -274,12 +291,29 @@ Node *Parser::primary()
   Token *identifier = consume_identifier();
   if (identifier)
   {
-    if(consume("(") && consume(")")){
-      Node *node = (Node *)calloc(1, sizeof(Node));
-      node->type = NodeType::ND_FUNCCALL;
-      node->identifier = (char *)malloc(identifier->length * sizeof(char));
-      strncpy(node->identifier, identifier->str, identifier->length);
-      return node;
+    if(consume("(")){
+      Node *call_node = (Node *)calloc(1, sizeof(Node));
+      call_node->type = NodeType::ND_FUNCCALL;
+      call_node->identifier = (char *)malloc(identifier->length * sizeof(char));
+      strncpy(call_node->identifier, identifier->str, identifier->length);
+      int i = 0;
+      Arg *head_arg;
+      bool first=true;
+      while(!is_proccessing(")", TokenType::TK_SYMBOL)){
+        if(first){
+          first=false;
+          call_node->arg = (Arg *)calloc(1, sizeof(Arg));
+          head_arg=call_node->arg;
+        }
+        Arg *new_arg = (Arg *)calloc(1, sizeof(Arg));
+        new_arg->node = expr();
+        call_node->arg->next = new_arg;
+        call_node->arg = call_node->arg->next;
+        if(!consume(","))break;
+      }
+      expect(")");
+      if(call_node->arg)call_node->arg=head_arg->next;
+      return call_node;
     }
     Node *node = (Node *)calloc(1, sizeof(Node));
     node->type = ND_LVAL;
