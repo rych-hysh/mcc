@@ -1,4 +1,4 @@
-
+# 旧（15章以前）
 program = stmt*
 stmt = expr ";" 
 			| block 
@@ -16,7 +16,27 @@ mul = unary ( "*" unary | "/" unary)*
 unary = ("+" | "-")? primary
 primary = num | "(" expr ")" | ident | ident"()"
 
+# 新（15章以降）
 program = func*
+func = ident "(" ident? ("," ident)*? ")" "{" stmt* "}"
+stmt = expr ";" 
+			| "{" stmt* "}" 
+			| "if" "(" expr ")" stmt ("else" stmt)? 
+			| "while" "(" expr ")" stmt 
+			| "for" "(" expr? ";" expr? ";" expr? ")" stmt
+expr = assign
+assign = equality ( "=" assign)?
+equality = relational ("==" relational | "!=" relational)*
+relational = add ("<" add | "<=" add | ">" add | ">=" add)*
+add = mul ( "+" mul | "-" mul)*
+mul = unary ( "*" unary | "/" unary)*
+unary = ("+" | "-")? primary
+primary = num | "(" expr ")" | ident | ident"(" expr? ( "," expr)*? ")"
+
+最終的に作りたいもの
+
+program = func | class
+class = (func)* | stmt*
 func = ident "(" ident? ("," ident)*? ")" "{" stmt* "}"
 stmt = expr ";" 
 			| "{" stmt* "}" 
