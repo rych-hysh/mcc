@@ -11,6 +11,6 @@ class Generator{
   void gen_left_value(Node *node);
   void gen_prologue(Node *node);
   void gen_epilogue();
-  void start_gen(Function *_function);
+  void start_gen(Function* funcs);
   void gen(Node *_node);
 };
