@@ -88,5 +88,8 @@ int main(int argc, char **argv)
     // printf("  pop rax\n");
   }
 
+  delete tokenizer;
+  delete parser;
+  delete generator;
   return 0;
 }

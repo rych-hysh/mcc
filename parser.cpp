@@ -71,8 +71,7 @@ vector<Function*> Parser::program()
     _func->local_var->offset = 0;
     _func->Func_top_node = func();
     functions.push_back(_func);
-    //TODO:消す
-    //funcs_index++;
+    delete _func;
   }
   return functions;
 }
