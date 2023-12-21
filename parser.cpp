@@ -1,15 +1,18 @@
 #include <cstdlib>
+#include <vector>
 
 #include "tokenizer.hpp"
 #include "parser.hpp"
 #include "util.hpp"
+
+using std::vector;
 
 Parser::Parser(char *_r)
 {
   raw_input = _r;
 };
 
-Function **Parser::parse(Token *_head_token)
+vector<Function*> Parser::parse(Token *_head_token)
 {
   token_proccessing = _head_token;
   return program();
@@ -59,17 +62,18 @@ Node *Parser::new_node_for(Node *_init, Node *_cond, Node *_loop, Node *_then){
   return new_node;
 }
 
-Function **Parser::program()
+vector<Function *> Parser::program()
 {
   while (!at_eof())
   {
-    functions[funcs_index] = (Function *)calloc(1, sizeof(Function));
+    Function* new_func = (Function *)calloc(1, sizeof(Function));
+    functions.push_back(new_func);
     functions[funcs_index]->local_var = (LocalVariable *)calloc(1, sizeof(LocalVariable));
     functions[funcs_index]->local_var->offset = 0;
     functions[funcs_index]->Func_top_node = func();
     funcs_index++;
   }
-  functions[funcs_index] = NULL;
+  functions.push_back(NULL);
   return functions;
 }
 
@@ -79,7 +83,7 @@ Node *Parser::func(){
   func_node->identifier = func_name;
   expect("(");
   func_node->type = NodeType::ND_FUNC;
-  LocalVariable *head_var;
+  LocalVariable *head_var = NULL;
   bool first = true;
   //Function型にlocalvariableをくっつける
   while(is_identifier(token_proccessing)){

@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "tokenizer.hpp"
 #include "types.hpp"
 
@@ -7,14 +8,14 @@ class Parser
 public:
   Parser(char *_raw_input);
 
-  Function **parse(Token *_head_token);
+  std::vector<Function*> parse(Token *_head_token);
 
 
 
 private:
   char *raw_input;
   Token *token_proccessing;
-  Function *functions[100];
+  std::vector<Function*> functions;
   int funcs_index = 0;
 
   //指定したNodeを生成
@@ -43,7 +44,7 @@ private:
   bool is_token(Token *_token, TokenType _expected_type, const char *_expected);
   bool at_eof();
 
-  Function **program();
+  std::vector<Function*> program();
 
   Node *func();
 

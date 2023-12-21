@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 #include "parser.hpp"
 #include "tokenizer.hpp"
@@ -58,7 +59,7 @@ int main(int argc, char **argv)
   // エラー箇所表示のためプログラム本文をparserにも渡す
   Parser *parser = new Parser(reading_program);
   // 入力をtoken(単語)に分割し、最初のtokenをtoken_proccessingに代入
-  Function **funcs = parser->parse(head_token);
+  vector<Function*> funcs = parser->parse(head_token);
 
   if (debug_flag)
   {
