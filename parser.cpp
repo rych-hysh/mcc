@@ -76,7 +76,6 @@ vector<Function *> Parser::program()
     functions[funcs_index]->Func_top_node = func();
     funcs_index++;
   }
-  functions.push_back(NULL);
   return functions;
 }
 
@@ -94,7 +93,6 @@ Node *Parser::func(){
     Token *consumed = consume_identifier();
     node->type=ND_LVAL;
     if(first){
-      //
       first = false;
       head_var = (LocalVariable *)calloc(1, sizeof(LocalVariable));
       head_var->offset = 0;
@@ -110,11 +108,7 @@ Node *Parser::func(){
     if(is_proccessing(")", TokenType::TK_SYMBOL))break;
     expect(",");
   }
-  if(head_var){
-    LocalVariable *l = functions[funcs_index]->local_var;
-    LocalVariable *h = head_var->next;
-    functions[funcs_index]->local_var = head_var->next;
-  }
+  if(head_var)functions[funcs_index]->local_var = head_var->next;
   expect(")");
   expect("{");
   Node *res_node = func_node;
