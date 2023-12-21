@@ -15,8 +15,7 @@ private:
   char *raw_input;
   Token *token_proccessing;
   vector<Function*> functions;
-  Function *_func;
-  // int funcs_index = 0;
+  int funcs_index = 0;
 
   //指定したNodeを生成
   Node *new_node(NodeType _type, Node *_lhs, Node *_rhs);

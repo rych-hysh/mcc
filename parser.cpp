@@ -1,9 +1,12 @@
 #include <cstdlib>
+#include <vector>
 
 #include "tokenizer.hpp"
 #include "parser.hpp"
 #include "util.hpp"
 #include <vector>
+
+using std::vector;
 
 using std::vector;
 
@@ -62,17 +65,18 @@ Node *Parser::new_node_for(Node *_init, Node *_cond, Node *_loop, Node *_then){
   return new_node;
 }
 
-vector<Function*> Parser::program()
+vector<Function *> Parser::program()
 {
   while (!at_eof())
   {
-    _func = new Function();
-    _func->local_var = (LocalVariable *)calloc(1, sizeof(LocalVariable));
-    _func->local_var->offset = 0;
-    _func->Func_top_node = func();
-    functions.push_back(_func);
-    delete _func;
+    Function* new_func = (Function *)calloc(1, sizeof(Function));
+    functions.push_back(new_func);
+    functions[funcs_index]->local_var = (LocalVariable *)calloc(1, sizeof(LocalVariable));
+    functions[funcs_index]->local_var->offset = 0;
+    functions[funcs_index]->Func_top_node = func();
+    funcs_index++;
   }
+  functions.push_back(NULL);
   return functions;
 }
 
@@ -94,22 +98,22 @@ Node *Parser::func(){
       first = false;
       head_var = (LocalVariable *)calloc(1, sizeof(LocalVariable));
       head_var->offset = 0;
-      _func->local_var = head_var;
+      functions[funcs_index]->local_var = head_var;
     }
     LocalVariable *arg_variable = (LocalVariable *)calloc(1, sizeof(LocalVariable));
     arg_variable->length = consumed->length;
     arg_variable->name = consumed->str;
-    arg_variable->offset = _func->local_var->offset + 8;
-    _func->local_var->next = arg_variable;
-    _func->local_var = _func->local_var->next;
+    arg_variable->offset = functions[funcs_index]->local_var->offset + 8;
+    functions[funcs_index]->local_var->next = arg_variable;
+    functions[funcs_index]->local_var = functions[funcs_index]->local_var->next;
 
     if(is_proccessing(")", TokenType::TK_SYMBOL))break;
     expect(",");
   }
   if(head_var){
-    LocalVariable *l = _func->local_var;
+    LocalVariable *l = functions[funcs_index]->local_var;
     LocalVariable *h = head_var->next;
-    _func->local_var = head_var->next;
+    functions[funcs_index]->local_var = head_var->next;
   }
   expect(")");
   expect("{");
@@ -335,12 +339,12 @@ Node *Parser::primary()
     else
     {
       lvar = (LocalVariable *)calloc(1, sizeof(LocalVariable));
-      lvar->next = _func->local_var;
+      lvar->next = functions[funcs_index]->local_var;
       lvar->name = identifier->str;
       lvar->length = identifier->length;
-      lvar->offset = _func->local_var->offset + 8;
+      lvar->offset = functions[funcs_index]->local_var->offset + 8;
       node->offset = lvar->offset;
-      _func->local_var = lvar;
+      functions[funcs_index]->local_var = lvar;
     }
     return node;
   }
@@ -350,7 +354,7 @@ Node *Parser::primary()
 
 LocalVariable *Parser::find_local_var(Token *_token)
 {
-  for (LocalVariable *var = _func->local_var; var; var = var->next)
+  for (LocalVariable *var = functions[funcs_index]->local_var; var; var = var->next)
   {
     if (var->length == _token->length && !memcmp(_token->str, var->name, var->length))
     {
