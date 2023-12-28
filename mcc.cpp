@@ -63,14 +63,13 @@ int main(int argc, char **argv)
 
   if (debug_flag)
   {
-    int n = 0;
+    std::vector<Function*>::size_type n = 0;
     ofstream writing_file;
     string filename = "parse_result.md";
     writing_file.open(filename, ios::out);
     writing_file << "```mermaid" << endl;
     writing_file << "flowchart TD" << endl;
     while (n < funcs.size()){
-      Node *db = funcs[n]->Func_top_node;
       int id = n*100;
       print_node(funcs[n++]->Func_top_node, id, &writing_file);
 
@@ -82,7 +81,7 @@ int main(int argc, char **argv)
   Generator *generator = new Generator(true);
 
   // TODO: 以下の処理をgenerator内に移す
-  int i = 0;
+  std::vector<Function*>::size_type i = 0;
   while ( i< funcs.size())
   {
     // 各関数のトップノードを渡す
