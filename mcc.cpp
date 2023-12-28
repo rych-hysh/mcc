@@ -81,6 +81,7 @@ int main(int argc, char **argv)
 
   Generator *generator = new Generator(true);
 
+  // TODO: 以下の処理をgenerator内に移す
   int i = 0;
   while ( i< funcs.size())
   {

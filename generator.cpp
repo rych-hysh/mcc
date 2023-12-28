@@ -154,6 +154,9 @@ void Generator::gen(Node *_node)
       _node = _node->thenNode;
     }
     return;
+  // TODO: トップレベルノードにしか来ないならgen_startで処理？
+  // クラス内で関数定義する場合もあるか？
+  // Cに厳密に従うならクラスのブロック内では関数の定義をしないか？
   case NodeType::ND_FUNC:
     cout << _node->identifier << ":" << endl;
     gen_prologue(_node);
