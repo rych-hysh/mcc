@@ -1,10 +1,10 @@
-CFLAGS=-std=c11 -g -static
+CPPFLAGS=-std=c++17 -g -static -Wall
 SRCS=$(wildcard *.cpp)
 OBJS=$(SRCS:.cpp=.o)
-CC=g++
+CXX=g++
 
 mcc: $(OBJS)
-	$(CC) -o mcc $(OBJS) $(LDFLAGS)
+	$(CXX) -o mcc $(OBJS) $(LDFLAGS) 
 
 $(OBJS): generator.hpp parser.hpp tokenizer.hpp types.hpp
 
