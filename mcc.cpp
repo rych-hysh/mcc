@@ -79,7 +79,7 @@ int main(int argc, char **argv)
     writing_file.close();
   }
 
-  Generator *generator = new Generator();
+  Generator *generator = new Generator(true);
 
   int i = 0;
   while ( i< funcs.size())

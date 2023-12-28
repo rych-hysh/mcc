@@ -1,13 +1,25 @@
-#include <cstdio>
 #include <list>
+#include <iostream>
+#include <string>
 
 #include "parser.hpp"
 #include "generator.hpp"
 
+#include "util.hpp"
+
+using std::cout, std::endl, std::string;
+
 Generator::Generator()
 {
-  printf(".intel_syntax noprefix\n");
-  printf(".globl main\n");
+  cout << ".intel_syntax noprefix" << endl;
+  cout << ".globl main" << endl;
+}
+
+Generator::Generator(bool is_debug)
+{
+  this->debug_mode = is_debug;
+  cout << ".intel_syntax noprefix" << endl;
+  cout << ".globl main" << endl;
 }
 
 void Generator::gen_left_value(Node *node)
@@ -17,22 +29,22 @@ void Generator::gen_left_value(Node *node)
     fprintf(stderr, "left hand side of assignment statement is not local variable");
     exit(1);
   }
-  printf("  mov rax, rbp\n");
-  printf("  sub rax, %d\n", node->offset);
-  printf("  push rax\n");
+  cout << "  mov rax, rbp" << endl;
+  cout << "  sub rax, " << node->offset << endl;
+  cout << "  push rax" << endl;
 }
 
 void Generator::gen_prologue(Node *_node)
 {
   // prologue
-  printf("  push rbp\n");
-  printf("  mov rbp, rsp\n");
-    std::list<char*> regs {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+  cout << "  push rbp" << endl;
+  cout << "  mov rbp, rsp" << endl;
+  std::list<string> regs {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
   while(function_proccessing->local_var){
     //現時点ではローカル変数のサイズは８固定なので各変数で８ずつ領域を確保する
-    printf("  sub rsp, 8\n");
-    printf("  mov rax, rsp\n");
-    printf("  mov [rax], %s\n", regs.front());
+    cout << "  sub rsp, 8" << endl;
+    cout << "  mov rax, rsp" << endl;
+    cout << "  mov [rax], " << regs.front() << endl;
     regs.pop_front();
     function_proccessing->local_var = function_proccessing->local_var->next;
   }
@@ -42,10 +54,10 @@ void Generator::gen_epilogue()
 {
   // epilogue
   // 最後の式の結果がraxに残っているはずなのでそれが返り値になる
-  printf("  pop rax\n");
-  printf("  mov rsp, rbp\n");
-  printf("  pop rbp\n");
-  printf("  ret\n");
+  cout << "  pop rax" << endl;
+  cout << "  mov rsp, rbp" << endl;
+  cout << "  pop rbp" << endl;
+  cout << "  ret" << endl;
 }
 
 void Generator::start_gen(Function *_function)
@@ -56,82 +68,82 @@ void Generator::start_gen(Function *_function)
 void Generator::gen(Node *_node)
 {
 
-  LocalVariable *lo_var = function_proccessing->local_var;
+  LocalVariable *lo_var = function_proccessing->local_var;  
+  if(debug_mode){
+    std::cout << "#" <<  get_ND_type(_node->type) << std::endl;
+  }
   switch (_node->type)
   {
   case NodeType::ND_NUMBER:
-    printf("  push %d\n", _node->value);
+    cout << "  push " << _node->value << endl;
     return;
   case NodeType::ND_LVAL:
     gen_left_value(_node);
-    printf("  pop rax\n");
-    printf("  mov rax, [rax]\n");
-    printf("  push rax\n");
+    cout << "  pop rax" << endl;
+    cout << "  mov rax, [rax]" << endl;
+    cout << "  push rax" << endl;
     return;
   case NodeType::ND_ASSIGN:
     gen_left_value(_node->leftHandSideNode);
     gen(_node->rightHandSideNode);
-    printf("  pop rdi\n");
-    printf("  pop rax\n");
-    printf("  mov [rax], rdi\n");
-    printf("  push rdi\n");
+    cout << "  pop rdi" << endl;
+    cout << "  pop rax" << endl;
+    cout << "  mov [rax], rdi" << endl;
+    cout << "  push rdi" << endl;
     return;
   case NodeType::ND_RETURN:
     gen(_node->leftHandSideNode);
-    printf("  pop rax\n");
-    printf("  mov rsp, rbp\n");
-    printf("  pop rbp\n");
-    printf("  ret\n");
+    gen_epilogue();
     return;
   case NodeType::ND_IF:
     gen(_node->condNode);
     // IF文の結果が真ならスタックトップに1が、偽なら０が入っている
-    printf("  pop rax\n");
+    cout << "  pop rax" << endl;
     // スタックトップが０（IFが偽）なら次の処理を飛ばす
-    printf("  cmp rax, 0\n");
-    printf("  je .Lend_mcc%d\n", global_label_index);
+    cout << "  cmp rax, 0" << endl;
+    cout << "  je .Lend_mcc" <<global_label_index << endl;
     if (_node->thenNode)
     {
       gen(_node->thenNode);
     }
-    printf(".Lend_mcc%d:\n", global_label_index++);
+    cout << ".Lend_mcc" << global_label_index++ << ":" <<endl;
     if (_node->elseNode)
     {
       gen(_node->elseNode);
     }
     return;
   case NodeType::ND_WHILE:
-    printf(".Lbegin_mcc%d:\n", global_label_index);
+    cout << ".Lbegin_mcc" << global_label_index << ":" << endl;
     gen(_node->condNode);
-    printf("  pop rax\n");
-    printf("  cmp rax, 0\n");
-    printf("  je .Lend_mcc%d\n", global_label_index);
+    cout << "  pop rax" << endl;
+    cout << "  cmp rax, 0" << endl;
+    cout << "  je .Lend_mcc" << global_label_index << endl;
     gen(_node->thenNode);
-    printf("  jmp .Lbegin_mcc%d\n", global_label_index);
-    printf(".Lend_mcc%d:\n", global_label_index);
+    cout << "  jmp .Lbegin_mcc" << global_label_index << endl;
+    cout << ".Lend_mcc" << global_label_index << ":" << endl;
     global_label_index++;
     return;
   case NodeType::ND_FOR:
     if(_node->initNode){
       gen(_node->initNode);
     }
-    printf(".Lbegin_mcc%d:\n", global_label_index);
+    cout << ".Lbegin_mcc" << global_label_index << ":" << endl;
     if(_node->condNode){
       gen(_node->condNode);
     }else{
-      printf("  push 1");
+      cout << "  push 1" << endl;
     }
-    printf("  pop rax\n");
-    printf("  cmp rax, 0\n");
-    printf("  je .Lend_mcc%d\n", global_label_index);
+    cout << "  pop rax" << endl;
+    cout << "  cmp rax, 0" << endl;
+    cout << "  je .Lend_mcc" << global_label_index << endl;
     if(_node->thenNode){
       gen(_node->thenNode);
     }
     if(_node->loopNode){
       gen(_node->loopNode);
     }
-    printf("  jmp .Lbegin_mcc%d\n", global_label_index);
-    printf(".Lend_mcc%d:\n", global_label_index);
+    cout << "  jmp .Lbegin_mcc" << global_label_index << endl;
+    cout << ".Lend_mcc" << global_label_index << ":" << endl;
     global_label_index++;
     return;
   case NodeType::ND_BLOCK:
@@ -145,7 +157,7 @@ void Generator::gen(Node *_node)
     }
     return;
   case NodeType::ND_FUNC:
-    printf("%s:\n", _node->identifier);
+    cout << _node->identifier << ":" << endl;
     gen_prologue(_node);
     while(_node->next){
       gen(_node->next);
@@ -154,73 +166,84 @@ void Generator::gen(Node *_node)
     gen_epilogue();
     return;
   case NodeType::ND_FUNCCALL:
-    std::list<char*> regs {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
-    while(_node && _node->arg && _node->arg->node){
-      gen(_node->arg->node);
-      printf("  pop rax\n");
-      printf("  mov %s, rax\n", regs.front());
-      _node->arg = _node->arg->next;
-      regs.pop_front();
+    {
+      std::list<string> regs{"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+      while(_node && _node->arg && _node->arg->node){
+        gen(_node->arg->node);
+        cout << "  pop rax" << endl;
+        cout << "\tmov " << regs.front() << ", rax" << endl;
+        _node->arg = _node->arg->next;
+        regs.pop_front();
+      }
+      cout << "  call " << _node->identifier << endl;
+      cout << "  push rax" << endl;
+      return;
     }
-    printf("  call %s\n", _node->identifier);
-    printf("  push rax\n");
+  case NodeType::ND_ADDR:
+    gen_left_value(_node->leftHandSideNode);
+    return;
+  case NodeType::ND_DEREF:
+    gen(_node->leftHandSideNode);
+    cout << "  pop rax" << endl;
+    cout << "  mov rax, [rax]" << endl;
+    cout << "  push rax" << endl;
     return;
   }
 
   gen(_node->leftHandSideNode);
   gen(_node->rightHandSideNode);
 
-  printf("  pop rdi\n");
-  printf("  pop rax\n");
+  cout << "  pop rdi" << endl;
+  cout << "  pop rax" << endl;
 
   switch (_node->type)
   {
   case NodeType::ND_EQ:
-    printf("  cmp rax, rdi\n");
-    printf("  sete al\n");
-    printf("  movzb rax, al\n");
+    cout << "  cmp rax, rdi" << endl;
+    cout << "  sete al" << endl;
+    cout << "  movzb rax, al" << endl;
     break;
   case NodeType::ND_NE:
-    printf("  cmp rax, rdi\n");
-    printf("  setne al\n");
-    printf("  movzb rax, al\n");
+    cout << "  cmp rax, rdi" << endl;
+    cout << "  setne al" << endl;
+    cout << "  movzb rax, al" << endl;
     break;
   case NodeType::ND_LT:
-    printf("  cmp rax, rdi\n");
-    printf("  setl al\n");
-    printf("  movzb rax, al\n");
+    cout << "  cmp rax, rdi" << endl;
+    cout << "  setl al" << endl;
+    cout << "  movzb rax, al" << endl;
     break;
   case NodeType::ND_LEQ:
-    printf("  cmp rax, rdi\n");
-    printf("  setle al\n");
-    printf("  movzb rax, al\n");
+    cout << "  cmp rax, rdi" << endl;
+    cout << "  setle al" << endl;
+    cout << "  movzb rax, al" << endl;
     break;
   case NodeType::ND_GT:
-    printf("  cmp rax, rdi\n");
-    printf("  setg al\n");
-    printf("  movzb rax, al\n");
+    cout << "  cmp rax, rdi" << endl;
+    cout << "  setg al" << endl;
+    cout << "  movzb rax, al" << endl;
     break;
   case NodeType::ND_GEQ:
-    printf("  cmp rax, rdi\n");
-    printf("  setge al\n");
-    printf("  movzb rax, al\n");
+    cout << "  cmp rax, rdi" << endl;
+    cout << "  setge al" << endl;
+    cout << "  movzb rax, al" << endl;
     break;
   case NodeType::ND_ADD:
-    printf("  add rax, rdi\n");
+    cout << "  add rax, rdi" << endl;
     break;
   case NodeType::ND_SUB:
-    printf("  sub rax, rdi\n");
+    cout << "  sub rax, rdi" << endl;
     break;
   case NodeType::ND_MUL:
-    printf("  imul rax, rdi\n");
+    cout << "  imul rax, rdi" << endl;
     break;
   case NodeType::ND_DIV:
-    printf("  cqo\n");
-    printf("  idiv rdi\n");
+    cout << "  cqo" << endl;
+    cout << "  idiv rdi" << endl;
     break;
   default:
     fprintf(stderr, "Invalide NodeType");
     break;
   }
-  printf("  push rax\n");
+  cout << "  push rax" << endl;
 }

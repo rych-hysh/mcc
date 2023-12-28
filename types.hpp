@@ -27,6 +27,8 @@ struct Token
 
 enum NodeType
 {
+  ND_ADDR,   // &
+  ND_DEREF,  // *
   ND_ADD,    // +
   ND_SUB,    // -
   ND_MUL,    // *

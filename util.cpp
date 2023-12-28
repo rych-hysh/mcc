@@ -41,51 +41,56 @@ std::string get_TK_type(int _code){
   case 6:
     return "TK_EOF";
   default:
-    break;
+    return "UNKNOWN_TOKEN";
   }
+  return "UNKNOWN_TOKEN";
 }
 std::string get_ND_type(int _code){
   switch (_code)
   {
   case 0:
-    return "ND_ADD";
+    return "ND_ADDR";
   case 1:
-    return "ND_SUB";
+    return "ND_DEREF";
   case 2:
-    return "ND_MUL";
+    return "ND_ADD";
   case 3:
-    return "ND_DIV";
+    return "ND_SUB";
   case 4:
-    return "ND_EQ";
+    return "ND_MUL";
   case 5:
-    return "ND_NE";
+    return "ND_DIV";
   case 6:
-    return "ND_LT";
+    return "ND_EQ";
   case 7:
-    return "ND_LEQ";
+    return "ND_NE";
   case 8:
-    return "ND_GT";
+    return "ND_LT";
   case 9:
-    return "ND_GEQ";
+    return "ND_LEQ";
   case 10:
-    return "ND_ASSIGN";
+    return "ND_GT";
   case 11:
-    return "ND_LVAL";
+    return "ND_GEQ";
   case 12:
-    return "ND_RETURN";
+    return "ND_ASSIGN";
   case 13:
-    return "ND_IF";
+    return "ND_LVAL";
   case 14:
-    return "ND_WHILE";
+    return "ND_RETURN";
   case 15:
-    return "ND_FOR";
+    return "ND_IF";
   case 16:
-    return "ND_BLOCK";
+    return "ND_WHILE";
   case 17:
-    return "ND_FUCN";
+    return "ND_FOR";
   case 18:
-    return "ND_FUNCCALL";
+    return "ND_BLOCK";
   case 19:
+    return "ND_FUCN";
+  case 20:
+    return "ND_FUNCCALL";
+  case 21:
     return "ND_NUMBER";
   default:
     return "ND_TYPE_ERROR";

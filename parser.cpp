@@ -71,8 +71,7 @@ vector<Function *> Parser::program()
   {
     Function* new_func = (Function *)calloc(1, sizeof(Function));
     functions.push_back(new_func);
-    functions[funcs_index]->local_var = (LocalVariable *)calloc(1, sizeof(LocalVariable));
-    functions[funcs_index]->local_var->offset = 0;
+    functions[funcs_index]->local_var = NULL;
     functions[funcs_index]->Func_top_node = func();
     funcs_index++;
   }
@@ -283,6 +282,12 @@ Node *Parser::unary()
   {
     return new_node(NodeType::ND_SUB, new_node_num(0), primary());
   }
+  if(consume("&")){
+    return new_node(NodeType::ND_ADDR, unary(), NULL);
+  }
+  if(consume("*")){
+    return new_node(NodeType::ND_DEREF, unary(), NULL);
+  }
   return primary();
 }
 
@@ -336,7 +341,7 @@ Node *Parser::primary()
       lvar->next = functions[funcs_index]->local_var;
       lvar->name = identifier->str;
       lvar->length = identifier->length;
-      lvar->offset = functions[funcs_index]->local_var->offset + 8;
+      lvar->offset = functions[funcs_index]->local_var ? functions[funcs_index]->local_var->offset + 8 : 8;
       node->offset = lvar->offset;
       functions[funcs_index]->local_var = lvar;
     }
