@@ -32,9 +32,11 @@ private:
 
   // 次のtokenが期待している記号の時はtoken_proccessingを次に進める。それ以外の場合はエラーを報告する。
   void expect(const char *_op);
+  // 次のtokenに特定の予約語を期待する。それ以外の場合はエラー。
+  void expect_reserved(const char* reserved);
   // 次のtokenが数値の時はその値を返しtoken_proccessingを次に進める。それ以外の場合はエラーを報告する。
   int expect_number();
-  char *expect_identifier();
+  Token *expect_identifier();
 
   //処理しているトークンの次のトークンを先読みし、期待するTokenならtrue,　それ以外ならfalseを返す。token_proccessingは変更しない。
   bool is_proccessing(const char *_expected, TokenType _expected_type);

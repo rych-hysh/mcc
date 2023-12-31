@@ -80,16 +80,19 @@ vector<Function *> Parser::program()
 
 Node *Parser::func(){
   Node *func_node = (Node *)calloc(1, sizeof(Node));
-  char *func_name = expect_identifier();
-  func_node->identifier = func_name;
+  expect_reserved("int");
+  Token *func_tok = expect_identifier();
+  func_node->identifier = (char*)calloc(func_tok->length, sizeof(char*));
+  strncpy(func_node->identifier, func_tok->str, func_tok->length);
   expect("(");
   func_node->type = NodeType::ND_FUNC;
   LocalVariable *head_var = NULL;
   bool first = true;
   //Function型にlocalvariableをくっつける
-  while(is_identifier(token_proccessing)){
+  while(consume("int", TK_RESERVED)){
+    // 関数定義時の引数から関数内で使用できるローカル変数の定義
     Node *node = (Node *)calloc(1, sizeof(Node));
-    Token *consumed = consume_identifier();
+    Token *consumed = expect_identifier();
     node->type=ND_LVAL;
     if(first){
       first = false;
@@ -166,7 +169,6 @@ Node *Parser::stmt()
     node->thenNode = stmt();
     return node;
   } else if(consume("{")){
-      node = (Node *) calloc(1, sizeof(Node));
       node->type = NodeType::ND_BLOCK;
       Node *head = node;
     while(!consume("}")){
@@ -174,6 +176,19 @@ Node *Parser::stmt()
       node = node->thenNode;
     }
     return head;
+  } else if(consume("int", TK_RESERVED)){
+      //　関数内のローカル変数定義
+      Token* identifier = expect_identifier();
+      LocalVariable* lvar = (LocalVariable *)calloc(1, sizeof(LocalVariable));
+      lvar->next = functions[funcs_index]->local_var;
+      lvar->name = identifier->str;
+      lvar->length = identifier->length;
+      lvar->offset = functions[funcs_index]->local_var ? functions[funcs_index]->local_var->offset + 8 : 8;
+      functions[funcs_index]->local_var = lvar;
+      expect(";");
+      node->type = NodeType::ND_LVARDEF;
+      node->offset = lvar->offset;
+      return node;
   } else {
     node = expr();
   }
@@ -307,7 +322,6 @@ Node *Parser::primary()
       call_node->type = NodeType::ND_FUNCCALL;
       call_node->identifier = (char *)malloc(identifier->length * sizeof(char));
       strncpy(call_node->identifier, identifier->str, identifier->length);
-      int i = 0;
       Arg *head_arg;
       bool first=true;
       while(!is_proccessing(")", TokenType::TK_SYMBOL)){
@@ -337,13 +351,7 @@ Node *Parser::primary()
     }
     else
     {
-      lvar = (LocalVariable *)calloc(1, sizeof(LocalVariable));
-      lvar->next = functions[funcs_index]->local_var;
-      lvar->name = identifier->str;
-      lvar->length = identifier->length;
-      lvar->offset = functions[funcs_index]->local_var ? functions[funcs_index]->local_var->offset + 8 : 8;
-      node->offset = lvar->offset;
-      functions[funcs_index]->local_var = lvar;
+      error_at(raw_input, token_proccessing->str, "undefined var.");
     }
     return node;
   }
@@ -404,12 +412,21 @@ int Parser::expect_number()
   return value;
 }
 
-char *Parser::expect_identifier(){
+Token *Parser::expect_identifier(){
   if(token_proccessing->type != TK_IDENTIFIER)error_at(raw_input, token_proccessing->str, "identifierではありません。");
   char *identifier = (char *)malloc(token_proccessing->length * sizeof(char));
+  Token* consumed = token_proccessing;
   strncpy(identifier, token_proccessing->str, token_proccessing->length);
   token_proccessing = token_proccessing->next;
-  return identifier;
+  return consumed;
+}
+
+void Parser::expect_reserved(const char* expected){
+  if (token_proccessing->type != TokenType::TK_RESERVED || strlen(expected) != token_proccessing->length || memcmp(token_proccessing->str, expected, token_proccessing->length))
+  {
+    error_at(raw_input, token_proccessing->str, "'%s'ではありません", expected);
+  }
+  token_proccessing = token_proccessing->next;
 }
 
 bool Parser::is_proccessing(const char* _expected, TokenType _TK_TYPE){
