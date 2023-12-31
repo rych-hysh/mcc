@@ -189,10 +189,14 @@ void Generator::gen(Node *_node)
     cout << "\tmov rax, [rax]" << endl;
     cout << "\tpush rax" << endl;
     return;
+  case NodeType::ND_LVARDEF:
+    return;
   default:
     break;
   }
 
+
+  // 以下lefthandsidenodeとrighthandsidenode両方の評価が必要なもの
   gen(_node->leftHandSideNode);
   gen(_node->rightHandSideNode);
 
