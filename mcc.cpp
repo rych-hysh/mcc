@@ -70,6 +70,7 @@ int main(int argc, char **argv)
     writing_file << "```mermaid" << endl;
     writing_file << "flowchart TD" << endl;
     while (n < funcs.size()){
+      // TODO: remove constant
       int id = n*100;
       print_node(funcs[n++]->Func_top_node, id, &writing_file);
 
