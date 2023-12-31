@@ -36,12 +36,12 @@ bool Tokenizer::is_token_char(char _c){
 
 //予約語のtokenを作成する
 bool Tokenizer::is_reserved(char **_p, Token **_current){
-  const char* tmp[] = {"return", "if", "else", "while", "for"};
-  for (int i = 0; i < 5; i++)
+  const char* reserved_list[] = {"return", "if", "else", "while", "for", "int"};
+  for (int i = 0; i < sizeof reserved_list / sizeof(char*); i++)
   {
-    if(strncmp(*_p, tmp[i], strlen(tmp[i])) == 0){
-      *_current = new_token(TokenType::TK_RESERVED, *_current, *_p, strlen(tmp[i]));
-      *_p+=strlen(tmp[i]);
+    if(strncmp(*_p, reserved_list[i], strlen(reserved_list[i])) == 0){
+      *_current = new_token(TokenType::TK_RESERVED, *_current, *_p, strlen(reserved_list[i]));
+      *_p+=strlen(reserved_list[i]);
       return true;
     }
   }
