@@ -43,9 +43,7 @@ stmt = expr ";"
 			| "if" "(" expr ")" stmt ("else" stmt)? 
 			| "while" "(" expr ")" stmt 
 			| "for" "(" expr? ";" expr? ";" expr? ")" stmt
-			| vardef
-vardef = "int" ident ";"
-expr = assign
+expr = assign | "int" ident 
 assign = equality ( "=" assign)?
 equality = relational ("==" relational | "!=" relational)*
 relational = add ("<" add | "<=" add | ">" add | ">=" add)*

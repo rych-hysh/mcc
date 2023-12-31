@@ -176,19 +176,6 @@ Node *Parser::stmt()
       node = node->thenNode;
     }
     return head;
-  } else if(consume("int", TK_RESERVED)){
-      //　関数内のローカル変数定義
-      Token* identifier = expect_identifier();
-      LocalVariable* lvar = (LocalVariable *)calloc(1, sizeof(LocalVariable));
-      lvar->next = functions[funcs_index]->local_var;
-      lvar->name = identifier->str;
-      lvar->length = identifier->length;
-      lvar->offset = functions[funcs_index]->local_var ? functions[funcs_index]->local_var->offset + 8 : 8;
-      functions[funcs_index]->local_var = lvar;
-      expect(";");
-      node->type = NodeType::ND_LVARDEF;
-      node->offset = lvar->offset;
-      return node;
   } else {
     node = expr();
   }
@@ -198,6 +185,20 @@ Node *Parser::stmt()
 
 Node *Parser::expr()
 {
+  if(consume("int", TK_RESERVED)){
+      Node *node = (Node *)calloc(1, sizeof(Node));
+      //　関数内のローカル変数定義
+      Token* identifier = expect_identifier();
+      LocalVariable* lvar = (LocalVariable *)calloc(1, sizeof(LocalVariable));
+      lvar->next = functions[funcs_index]->local_var;
+      lvar->name = identifier->str;
+      lvar->length = identifier->length;
+      lvar->offset = functions[funcs_index]->local_var ? functions[funcs_index]->local_var->offset + 8 : 8;
+      functions[funcs_index]->local_var = lvar;
+      node->type = NodeType::ND_LVARDEF;
+      node->offset = lvar->offset;
+      return node;
+  } 
   return assign();
 }
 

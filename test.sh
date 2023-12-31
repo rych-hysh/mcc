@@ -12,7 +12,7 @@ assert(){
     echo OK;
   else
     echo "$input => $expected expected, but got $actual"
-    exit -1;
+    exit -1
   fi
 }
 
@@ -39,7 +39,7 @@ assert 16 'int main(){int foo; foo = 2; int var; var = 3;int s;  s = foo * var;r
 assert 1 "int main(){int a; a=2;if(a==2)a = 1;return a;}"
 assert 3 "int main(){int a; a=2;if(a!=2)a = 1;else a=3;return a;}"
 assert 4 "int main(){int i; i = 0; while(i < 4) i=i+1; return i;}"
-#TODO: for内での関数定義
+#TODO: for内での関数定義(定義はできるが初期化できないため現状不可)
 assert 5 "int main(){int hoge; hoge = 2; int i ;for(i=0; i< 3; i=i+1)hoge = hoge + i; return hoge;}"
 assert 2 "int main(){int hoge; int i; hoge = 2; for(;i!=12;)i=12;return hoge;}"
 assert 3 "int main(){int a; {a = 2; a = 3;} return a;}"
