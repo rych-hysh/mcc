@@ -49,6 +49,7 @@ enum NodeType
   ND_FUNC,
   ND_FUNCCALL,
   ND_NUMBER, // 整数
+  ND_LVARDEF, // ローカル変数定義
 };
 
 struct LocalVariable {

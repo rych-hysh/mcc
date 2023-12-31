@@ -26,19 +26,19 @@ void error_at(const char* _raw_input, char *_location, const char *_fmt, ...){
 std::string get_TK_type(int _code){
   switch (_code)
   {
-  case 0:
+  case TK_SYMBOL:
     return "TK_SYMBOL";
-  case 1:
+  case TK_NUMBER:
     return "TK_NUMBER";
-  case 2:
+  case TK_IDENTIFIER:
     return "TK_IDENTIFIER";
-  case 3:
+  case TK_RETURN:
     return "TK_RETURN";
-  case 4:
+  case TK_IF:
     return "TK_IF";
-  case 5:
+  case TK_RESERVED:
     return "TK_RESERVED";
-  case 6:
+  case TK_EOF:
     return "TK_EOF";
   default:
     return "UNKNOWN_TOKEN";
@@ -48,50 +48,52 @@ std::string get_TK_type(int _code){
 std::string get_ND_type(int _code){
   switch (_code)
   {
-  case 0:
+  case ND_ADDR:
     return "ND_ADDR";
-  case 1:
+  case ND_DEREF:
     return "ND_DEREF";
-  case 2:
+  case ND_ADD:
     return "ND_ADD";
-  case 3:
+  case ND_SUB:
     return "ND_SUB";
-  case 4:
+  case ND_MUL:
     return "ND_MUL";
-  case 5:
+  case ND_DIV:
     return "ND_DIV";
-  case 6:
+  case ND_EQ:
     return "ND_EQ";
-  case 7:
+  case ND_NE:
     return "ND_NE";
-  case 8:
+  case ND_LT:
     return "ND_LT";
-  case 9:
+  case ND_LEQ:
     return "ND_LEQ";
-  case 10:
+  case ND_GT:
     return "ND_GT";
-  case 11:
+  case ND_GEQ:
     return "ND_GEQ";
-  case 12:
+  case ND_ASSIGN:
     return "ND_ASSIGN";
-  case 13:
+  case ND_LVAL:
     return "ND_LVAL";
-  case 14:
+  case ND_RETURN:
     return "ND_RETURN";
-  case 15:
+  case ND_IF:
     return "ND_IF";
-  case 16:
+  case ND_WHILE:
     return "ND_WHILE";
-  case 17:
+  case ND_FOR:
     return "ND_FOR";
-  case 18:
+  case ND_BLOCK:
     return "ND_BLOCK";
-  case 19:
-    return "ND_FUCN";
-  case 20:
+  case ND_FUNC:
+    return "ND_FUNC";
+  case ND_FUNCCALL:
     return "ND_FUNCCALL";
-  case 21:
+  case ND_NUMBER:
     return "ND_NUMBER";
+  case ND_LVARDEF:
+    return "ND_LVARDEF";
   default:
     return "ND_TYPE_ERROR";
   }
